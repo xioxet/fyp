@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  httpd:
+    image: httpd:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+
+  svelte:
+    image: svelte:fyp-frontend
+    ports:
+      - "8080:80"
