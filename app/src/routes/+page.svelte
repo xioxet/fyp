@@ -1,3 +1,5 @@
 <script>
-    import Chat from "../components/Chat.svelte";
+    import Home from "../components/Home.svelte";
+
 </script>
+<Home></Home>
