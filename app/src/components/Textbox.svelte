@@ -1,4 +1,4 @@
-<form class="relative mt-5">
+<form method="POST" class="relative mt-5">
     <input class="w-full h-10 rounded-lg bg-slate-100 text-slate-700 px-3" placeholder="Ask something here...">
     <button class="absolute end-2 text-xl text-slate-800 hover:text-orange-300">▶</button>
 </form>
@@ -9,9 +9,3 @@
         top: 50%;
     }
 </style>
-
-<script>
-    function submitMessage() {
-        alert("message")
-    }
-</script>

@@ -26,5 +26,9 @@
 	},
 	"optionalDependencies": {
 		"@rollup/rollup-linux-x64-musl": "4.6.1"
+	},
+	"dependencies": {
+		"pg": "^8.13.1",
+		"postgres": "^3.4.5"
 	}
 }

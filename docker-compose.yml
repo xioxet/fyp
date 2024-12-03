@@ -1,7 +1,6 @@
-version: '3'
-
 services:
   httpd:
+    container_name: httpd
     image: httpd:latest
     ports:
       - "80:80"
@@ -9,6 +8,19 @@ services:
       - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
 
   svelte:
+    container_name: frontend
     image: svelte:fyp-frontend
     ports:
       - "8080:80"
+
+  postgres:
+    container_name: postgres
+    image: postgres:17-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=messages 
