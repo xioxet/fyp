@@ -7,14 +7,26 @@ services:
     volumes:
       - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
 
-  svelte:
-    container_name: frontend
-    image: svelte:fyp-frontend
+  frontend:
+    container_name: fyp-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "8080:80"
 
+  backend:
+    container_name: fyp-backend
+    build:
+      context: ./backend
+      target: builder
+    
+    stop_signal: SIGINT
+    ports:
+      - '8000:8000'
+
   postgres:
-    container_name: postgres
+    container_name: fyp-postgres
     image: postgres:17-alpine
     ports:
       - 5432:5432
