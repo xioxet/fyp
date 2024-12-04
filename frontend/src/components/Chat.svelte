@@ -1,12 +1,13 @@
 <script>
-    import {onMount} from 'svelte';
+    import {onMount, afterUpdate} from 'svelte';
     import Message from "./Message.svelte";
-    import Textbox from "./Textbox.svelte";
+    import UserInput from "./UserInput.svelte";
 
     let chat;
     export let messages;
 
     onMount(() => scrollToBottom(chat))
+    afterUpdate(() => scrollToBottom(chat))
 
     const scrollToBottom = async(node) => {
         node.scroll({top: node.scrollHeight, behavior: 'auto'})
@@ -24,6 +25,6 @@
         {/each}
     </div>
     <div class="h-[10h]">
-        <Textbox></Textbox>
+        <UserInput></UserInput>
     </div>
 </div>

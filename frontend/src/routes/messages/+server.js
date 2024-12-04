@@ -18,10 +18,27 @@ export async function POST({ request, locals }) {
     const { sql } = locals;
     const body = await request.json();
     const messagecontent = body.messagecontent;
-    console.log(`message = ${messagecontent}`)
     const uuid = "test";
     const fromuser = true;
-    const query = await sql`INSERT INTO 
-    MESSAGES (uuid, messagecontent, fromuser)VALUES (${uuid}, ${messagecontent}, ${fromuser})`;
+    const user_query = await sql`INSERT INTO 
+    MESSAGES (uuid, messagecontent, fromuser)VALUES (${uuid}, ${messagecontent}, ${fromuser === true})`;
+    
+    // ask backend
+    console.log('sending to backend')
+    const backend_response = await fetch('http://fyp-backend:5000/process_message', {
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({
+            'message': messagecontent
+        })
+    })
+
+    const backend_message = await backend_response.json();
+
+    const backend_query = await sql`INSERT INTO 
+    MESSAGES (uuid, messagecontent, fromuser)VALUES (${uuid}, ${backend_message.message}, ${fromuser === false})`;
+
     return await get_messages({sql, uuid});
 }

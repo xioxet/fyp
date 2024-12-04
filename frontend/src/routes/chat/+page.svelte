@@ -3,8 +3,6 @@
     
 	export let data;
     $: messages = data ? data.messages : undefined;
-
-    console.log(data.messages);
 </script>
 
 <Chat {messages}/>

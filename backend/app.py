@@ -1,20 +1,24 @@
-from flask import Flask
-from flask import request
+from fastapi import FastAPI
+from pydantic import BaseModel
 from random import randint
-app = Flask(__name__)
-
-@app.route('/process_message', methods = ['POST'])
-def process_message_endpoint():
-    message = request.form.get('message')
-    return {
-        'messagecontent':
-        process_message(message)
-        }
-
-def process_message(message):
-    # sample function
-    return f"hello {randint(1, 100000)}"
+app = FastAPI()
 
 
-if __name__ == '__main__':
-   app.run(debug=True)
+@app.get("/")
+async def root():
+    return {"message": "ok i pull up hop out at te afterparty"}
+
+class Message(BaseModel):
+    message: str
+
+@app.post('/process_message/')
+async def process_message(message: Message):
+    messagecontent = message.message
+    return {"message": transform(messagecontent)}
+
+def transform(message):
+    return f'{randint(1000, 9999)} {message}'
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5000)

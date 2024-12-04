@@ -20,8 +20,6 @@ export const actions = {
 			})
 		})
 		const messages = await response.json();
-		messages.pop()
-		console.log(`new messages: ${messages}`);
 		return { messages };
 	}
 }
