@@ -1,8 +1,10 @@
 <script>
     import Chat from "../../components/Chat.svelte";
     
-    /** @type {{ data: import('./$types').PageData }} */
 	export let data;
+    $: messages = data ? data.messages : undefined;
+
+    console.log(data.messages);
 </script>
 
-<Chat messages={ data.messages }/>
+<Chat {messages}/>

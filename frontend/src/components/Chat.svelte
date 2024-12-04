@@ -4,7 +4,7 @@
     import Textbox from "./Textbox.svelte";
 
     let chat;
-    let { messages } = $props();
+    export let messages;
 
     onMount(() => scrollToBottom(chat))
 
