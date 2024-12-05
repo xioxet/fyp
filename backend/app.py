@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from random import randint
-app = FastAPI()
 
+app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "ok i pull up hop out at te afterparty"}
+    return {"message": "ok i pull up hop out at the afterparty"}
 
 class Message(BaseModel):
     message: str
@@ -16,6 +16,7 @@ async def process_message(message: Message):
     messagecontent = message.message
     return {"message": transform(messagecontent)}
 
+# should take in a string and output a string
 def transform(message):
     return f'{randint(1000, 9999)} {message}'
 
