@@ -32,6 +32,13 @@ def add_message(uuid, messagecontent, fromuser):
         cursor.execute(SQL, (uuid, messagecontent, fromuser))
         return {"error":False}
     except Exception as e:
-        return {"error":True, "message":"e"}
+        return {"error":True, "message":str(e)}
     
 
+def reset_chat():
+    try:
+        SQL = "DELETE FROM messages WHERE messagecontent!='if you are seeing this, the postgres initialization worked'"
+        cursor.execute(SQL)
+        return {"error":False}
+    except Exception as e:
+        return {"error":True, "message":str(e)}

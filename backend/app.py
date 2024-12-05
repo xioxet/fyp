@@ -27,6 +27,10 @@ async def add_message(message: Message):
     message_response = await transform(messagecontent)
     database.add_message(uuid, message_response, False)
     return database.get_messages(uuid)
+
+@app.post("/reset_chat/")
+async def reset_chat():
+    return database.reset_chat()
      
 async def transform(message):
     # simulating time taken for the AI to respond

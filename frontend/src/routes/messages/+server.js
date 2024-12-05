@@ -1,3 +1,10 @@
+//as you can tell the sql functions used to be on here
+//and then i realized
+//thats fucking dumb as rocks
+//and then i moved it to the fastapi backend
+//because thats less dumb as rocks
+
+
 //async function get_messages({ sql, uuid }) {
 //    const result = await sql`SELECT * FROM messages WHERE uuid='test';`
 //    return new Response(JSON.stringify(result), {

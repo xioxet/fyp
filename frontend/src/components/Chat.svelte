@@ -6,7 +6,6 @@
     import Loading from './Loading.svelte';
 
     let chat;
-    let userinput;
     export let messages;
     export let waitingformessage = false;
     let initialmount = true;
@@ -15,6 +14,10 @@
     onMount(() => scrollToBottom());
     afterUpdate(() => scrollToBottom());
 
+    // i know this is a mess but there's something very fucky going on with how the messages render in
+    // because i have to re-render them in and therefore i have to suppress it frmo scrolling to bottom
+    // when i don't want it to
+    // #trusttheprocess
     const scrollToBottom = async(node=chat) => {
         if (waitingformessage || initialmount) {
             node.scroll({top: node.scrollHeight, behavior: 'auto'})
@@ -50,17 +53,15 @@
         <form use:enhance={({formData}) => {
             waitingformessage = true;
             tempmessagetext = formData.get('message');
-            console.log(tempmessagetext);
             return async ({ update }) => {
                 update().then(function() {
                     scrollToBottom();
                     waitingformessage = false;
-                    userinput.focus();
                 })
             }
         }} action="" method="POST" class="relative mt-5">
-        <input bind:this={userinput} name=message class="w-full h-10 rounded-lg bg-slate-100 text-slate-700 px-3" placeholder="Ask something here...">
-        <button type="submit" class="absolute end-2 text-xl text-slate-800 hover:text-orange-300">▶</button>
+        <input autofocus name=message class="w-full h-10 rounded-lg bg-slate-100 text-slate-700 px-3" placeholder="Ask something here...">
+        <button disabled={waitingformessage} type="submit" class="absolute end-2 text-xl text-slate-800 hover:text-orange-300">▶</button>
         </form>
     </div>
 </div>
