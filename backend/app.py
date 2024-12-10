@@ -11,12 +11,16 @@ class Message(BaseModel):
     messagecontent: str
     fromuser: bool
 
+class User(BaseModel):
+    username: str
+    password: str
+
 @app.get("/")
 async def index():
     return {"message": "ok i pull up hop out at the afterparty"}
 
 @app.get("/get_messages/{uuid}/")
-async def get_messages(uuid : str):
+async def get_messages(uuid: str):
     messages = database.get_messages(uuid)
     return messages
 
@@ -32,6 +36,14 @@ async def add_message(message: Message):
 async def reset_chat():
     return database.reset_chat()
      
+@app.post("/register/")
+async def register(user: User):
+    return database.add_user(user.username, user.password)
+
+@app.get("/get_users/")
+async def get_users():
+    return database.get_users()
+
 async def transform(message):
     # simulating time taken for the AI to respond
     await asyncio.sleep(1)

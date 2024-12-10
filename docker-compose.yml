@@ -1,6 +1,6 @@
 services:
   httpd:
-    container_name: httpd
+    container_name: ${PROXY_URL}
     image: httpd:latest
     ports:
       - "80:80"
@@ -8,25 +8,34 @@ services:
       - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
 
   frontend:
-    container_name: fyp-frontend
+    container_name: ${FRONTEND_URL}
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - PROXY_URL=${PROXY_URL}
+        - FRONTEND_URL=${FRONTEND_URL}
+        - BACKEND_URL=${BACKEND_URL}
+        - POSTGRES_URL=${POSTGRES_URL}
     ports:
       - "4173:4173"
 
   backend:
-    container_name: fyp-backend
+    container_name: ${BACKEND_URL}
     build:
       context: ./backend
       target: builder
-    
+      args:
+        - PROXY_URL=${PROXY_URL}
+        - FRONTEND_URL=${FRONTEND_URL}
+        - BACKEND_URL=${BACKEND_URL}
+        - POSTGRES_URL=${POSTGRES_URL}
     stop_signal: SIGINT
     ports:
       - 5000:5000
 
   postgres:
-    container_name: fyp-postgres
+    container_name: ${POSTGRES_URL}
     image: postgres:17-alpine
     ports:
       - 5432:5432
