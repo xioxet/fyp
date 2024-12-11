@@ -1,11 +1,11 @@
 services:
-  httpd:
+  proxy:
     container_name: ${PROXY_URL}
-    image: httpd:latest
+    image: owasp/modsecurity-crs:apache
     ports:
-      - "80:80"
-    volumes:
-      - ./httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+      - "80:8080"
+    environment:
+      - BACKEND=http://${FRONTEND_URL}:4173
 
   frontend:
     container_name: ${FRONTEND_URL}
