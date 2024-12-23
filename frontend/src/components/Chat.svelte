@@ -32,7 +32,7 @@
 {#if initialmount} 
     <Loading></Loading>
 {/if}
-<div class="relative mt-10 mx-auto bg-slate-800 p-5 h-[80h] w-10/12 max-w-[500px]"
+<div class="relative mx-auto p-5"
      class:opacity-0={initialmount}>
     <div class="h-[70vh] justify-end overflow-y-auto"
     bind:this={chat}>
@@ -51,9 +51,11 @@
     <!--userinput-->
     <div class="h-[10h]">
         <form use:enhance={({formData}) => {
+            console.log(formData)
             waitingformessage = true;
             tempmessagetext = formData.get('message');
             return async ({ update }) => {
+                console.log('does this ever get triggered')
                 update().then(function() {
                     scrollToBottom();
                     waitingformessage = false;

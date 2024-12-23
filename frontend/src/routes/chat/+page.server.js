@@ -2,7 +2,7 @@ import { browser } from "$app/environment";
 import { BACKEND_URL } from "$env/static/private";
 
 export async function load({ fetch, params }) {
-	const response = await fetch(`http://${BACKEND_URL}:5000/get_messages/test`);
+	const response = await fetch(`http://${BACKEND_URL}:5000/get_messages/test/`);
     var messages = await response.json();
 	return { messages };
 }

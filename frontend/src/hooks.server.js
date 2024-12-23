@@ -42,6 +42,14 @@ export function csrf(allowedPaths) {
   }
 
 export async function handle({event, resolve}) {
-    const CSRF = csrf(['/chat'])
-    return CSRF({event, resolve})    
+    console.log('handling...')
+    try {
+        const CSRF = csrf(['/chat'])
+        return CSRF({event, resolve})    
+    } catch (error) {
+        console.log('error caught')
+        if (error.status === 403) {
+            return new Response('Forbidden', {status: 403})
+        }
+    }
 }
