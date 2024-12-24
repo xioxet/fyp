@@ -1,3 +1,1 @@
-<div>
-    <a href="/chat">click here for the chat</a>
-</div>
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta optio hic doloremque commodi dolorum consectetur voluptatibus dolor voluptatem excepturi, quaerat aliquam cum officia delectus eos possimus consequatur. Adipisci, aliquid fugit.

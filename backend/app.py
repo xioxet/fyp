@@ -4,6 +4,9 @@ from random import randint
 import asyncio
 import database
 
+# old backend
+import old_backend
+
 app = FastAPI()
 
 class Message(BaseModel):
@@ -28,8 +31,10 @@ async def get_messages(uuid: str):
 async def add_message(message: Message):
     uuid, messagecontent, fromuser = message.uuid, message.messagecontent, message.fromuser
     database.add_message(uuid, messagecontent, fromuser)
-    message_response = await transform(messagecontent)
-    database.add_message(uuid, message_response, False)
+    #message_response = await transform(messagecontent)
+    message_response = await old_backend.transform(messagecontent)
+    message = message_response['answer']
+    database.add_message(uuid, message, False)
     return database.get_messages(uuid)
 
 @app.post("/reset_chat/")

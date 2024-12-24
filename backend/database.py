@@ -6,7 +6,6 @@ import users
 import os
 
 postgres_url = os.environ['POSTGRES_URL']
-
 connection = psycopg2.connect(
     database='main', 
     user='postgres', 

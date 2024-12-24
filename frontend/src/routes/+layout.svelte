@@ -7,13 +7,14 @@
     let { children } = $props();
 </script>
 
-<Header></Header>
-<div class="h-5/6 gap-4 flex w-90 m-auto mt-2 h-full">
-    <div class="w-1/5 -mt-2 border-r-2">
-        <Sidebar></Sidebar>
-    </div>
-    <div class="w-3/5 mx-auto -mt-2">
-        {@render children()}
-        <Naoto></Naoto>
+<div class="flex flex-col h-screen">
+    <Header></Header>
+    <div class="grow flex w-screen m-auto bg-slate-800">
+        <div class="grow w-1/10 bg-slate-900">
+            <Sidebar></Sidebar>
+        </div>
+        <div class="grow w-3/5 relative">
+            {@render children()}
+        </div>
     </div>
 </div>

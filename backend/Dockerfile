@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM python:3.12.0b1-slim-buster AS builder
+FROM --platform=$BUILDPLATFORM python:3.10-bookworm AS builder
 
 ARG PROXY_URL
 ARG FRONTEND_URL
@@ -22,14 +22,10 @@ CMD ["app.py"]
 
 FROM builder as dev-envs
 
-RUN <<EOF
-apk update
-apk add git
-EOF
+RUN apt-get update && \
+    apt-get install -y git
 
-RUN <<EOF
-addgroup -S docker
-adduser -S --shell /bin/bash --ingroup docker vscode
-EOF
+RUN groupadd -r docker && \
+    useradd -m -s /bin/bash -g docker vscode
 
 COPY --from=gloursdocker/docker / /
