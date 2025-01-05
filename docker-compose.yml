@@ -35,6 +35,8 @@ services:
       - 5000:5000
     depends_on: 
       - postgres
+    volumes:
+      - ./backend:/app
 
   postgres:
     container_name: ${POSTGRES_URL}
@@ -47,7 +49,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=messages 
+      - POSTGRES_DB=main 
 
 volumes:
   database_data:

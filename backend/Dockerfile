@@ -13,7 +13,10 @@ ENV POSTGRES_URL ${POSTGRES_URL}
 WORKDIR /app
 COPY requirements.txt /app
 
-RUN pip install -r requirements.txt
+RUN apt-get update && \
+    apt-get -y install tesseract-ocr && \
+    apt-get install -y libgl1-mesa-glx libglib2.0-0 poppler-utils && \
+    pip install -r requirements.txt
 
 COPY . /app
 
