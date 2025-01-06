@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from random import randint
 import asyncio
 import database
+import login
 
 # old backend
 import old_backend
@@ -41,6 +42,8 @@ async def add_message(message: Message):
 async def reset_chat():
     return database.reset_chat()
      
+# account system
+
 @app.post("/register/")
 async def register(user: User):
     return database.add_user(user.username, user.password)
@@ -48,6 +51,10 @@ async def register(user: User):
 @app.get("/get_users/")
 async def get_users():
     return database.get_users()
+
+@app.post("/login/")
+async def login(user: User):
+    return database.verify_login(user.username, user.password)
 
 async def transform(message):
     # simulating time taken for the AI to respond

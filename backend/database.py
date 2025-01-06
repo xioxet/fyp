@@ -1,11 +1,14 @@
 import psycopg2
-from functools import lru_cache
+from dotenv import load_dotenv
 import json
 import uuid
-import users
+import login
 import os
 
-postgres_url = os.environ['POSTGRES_URL']
+load_dotenv()
+postgres_url = os.getenv('POSTGRES_URL')
+secret_key = os.getenv('SECRET_KEY')
+
 connection = psycopg2.connect(
     database='main', 
     user='postgres', 
@@ -56,14 +59,13 @@ def reset_chat():
 
 def add_user(username, password):
     try:
-        uuid = uuid.uuid4()
-        password = generate_hash(password)
+        uuid_4 = str(uuid.uuid4())
+        password = login.generate_hash(password)
         SQL = "INSERT INTO users (uuid, username, password) VALUES (%s, %s, %s)"
-        cursor.execute(SQL, (uuid, username, password))
+        cursor.execute(SQL, (uuid_4, username, password))
         return {"error":False}
     except Exception as e:
         return {"error":True, "message":str(e)}
-
 
 def get_users():
     try:
@@ -78,5 +80,24 @@ def get_users():
             }
             users.append(user_json)
         return users
+    except Exception as e:
+        return {"error":True, "message":str(e)}
+
+def verify_login(username, password):
+    try:
+        SQL = "SELECT * FROM users WHERE username = (%s)"
+        cursor.execute(SQL, (username,))
+        user = cursor.fetchone()
+        print(user)
+        if user:
+            uuid4, username, hashed = user
+            if login.verify_hash(hashed, password):
+                jwt = login.create_jwt(
+                    {"uuid":uuid4}, secret_key
+                )
+                return {"error":False, "message":jwt}
+        else:
+            return {"error":True, "message":"Invalid login credentials!"}
+            
     except Exception as e:
         return {"error":True, "message":str(e)}
