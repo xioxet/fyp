@@ -1,5 +1,6 @@
 CREATE DATABASE main;
 \c main;
+
 CREATE TABLE messages (
     uuid VARCHAR(255) NOT NULL DEFAULT 'test',
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -16,5 +17,13 @@ INSERT INTO messages (uuid, messagecontent) VALUES
 CREATE TABLE users (
 	uuid VARCHAR(255) NOT NULL DEFAULT 'test',
 	username VARCHAR(50) NOT NULL DEFAULT 'naoto',
-	password VARCHAR(255) NOT NULL
+	password VARCHAR(255) NOT NULL,
+    UNIQUE (uuid, username)
 	);
+
+INSERT INTO users (uuid, username, password) VALUES
+    ('faa204f4-3dbb-4b2c-944e-e15884cf0f28', 
+     'naoto', 
+     '$pbkdf2-sha256$29000$mdNai5HSujeGkBIiJKTUGg$CpEbjtymlGIAvPS1ChIoQ2AMLs8JE6ZqlwGz003dSrM');
+
+

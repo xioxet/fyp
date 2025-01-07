@@ -11,7 +11,7 @@ import old_backend
 app = FastAPI()
 
 class Message(BaseModel):
-    uuid: str
+    jwt: str
     messagecontent: str
     fromuser: bool
 
@@ -23,20 +23,20 @@ class User(BaseModel):
 async def index():
     return {"message": "ok i pull up hop out at the afterparty"}
 
-@app.get("/get_messages/{uuid}/")
-async def get_messages(uuid: str):
-    messages = database.get_messages(uuid)
+@app.get("/get_messages/{accesstoken}/")
+async def get_messages(accesstoken: str):
+    messages = database.get_messages(accesstoken)
     return messages
 
 @app.post("/add_message/")
 async def add_message(message: Message):
-    uuid, messagecontent, fromuser = message.uuid, message.messagecontent, message.fromuser
-    database.add_message(uuid, messagecontent, fromuser)
+    accesstoken, messagecontent, fromuser = message.jwt, message.messagecontent, message.fromuser
+    database.add_message(accesstoken, messagecontent, fromuser)
     #message_response = await transform(messagecontent)
     message_response = await old_backend.transform(messagecontent)
     message = message_response['answer']
-    database.add_message(uuid, message, False)
-    return database.get_messages(uuid)
+    database.add_message(accesstoken, message, False)
+    return database.get_messages(accesstoken)
 
 @app.post("/reset_chat/")
 async def reset_chat():

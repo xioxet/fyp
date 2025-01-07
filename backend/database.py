@@ -20,8 +20,10 @@ connection = psycopg2.connect(
 cursor = connection.cursor()
 
 
-def get_messages(uuid):
+def get_messages(accesstoken):
     try:
+        uuid = login.get_jwt_uuid(accesstoken, secret_key)
+        print(accesstoken, uuid)
         SQL = "SELECT * FROM messages WHERE uuid=(%s)"
         cursor.execute(SQL, (uuid,))
         messages = []
@@ -38,9 +40,9 @@ def get_messages(uuid):
             return {"error":e}
 
 
-
-def add_message(uuid, messagecontent, fromuser):
+def add_message(accesstoken, messagecontent, fromuser):
     try:
+        uuid = login.get_jwt_uuid(accesstoken, secret_key)
         SQL = "INSERT INTO messages (uuid, messagecontent, fromuser) VALUES (%s, %s, %s)"
         cursor.execute(SQL, (uuid, messagecontent, fromuser))
         return {"error":False}
@@ -93,7 +95,7 @@ def verify_login(username, password):
             uuid4, username, hashed = user
             if login.verify_hash(hashed, password):
                 jwt = login.create_jwt(
-                    {"uuid":uuid4}, secret_key
+                    {"uuid":uuid4, "username":username}, secret_key
                 )
                 return {"error":False, "message":jwt}
         else:
