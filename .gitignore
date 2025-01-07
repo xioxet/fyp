@@ -163,3 +163,5 @@ cython_debug/
 
 postgres/
 backend/chroma_db
+backend/chroma_db/chroma.sqlite3
+backend/modelling/extracted_text.txt

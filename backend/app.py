@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 # old backend
 import old_backend
 from TextExtraction import get_pdf_text, get_docx_text, get_pptx_text, get_xlsx_text
-from DataChunking import clean_and_chunk_file, preprocess_chunk, remove_duplicates, insert_data_into_db, read_and_chunk_file
+#from DataChunking import clean_and_chunk_file, preprocess_chunk, remove_duplicates, insert_data_into_db, read_and_chunk_file
 from DataChunking import main as DataChunking_main
 
 DATA_PATH = os.getenv("DATA_PATH", "./modelling/extracted_text.txt")
@@ -89,7 +89,7 @@ async def add_message(message: Message):
         
         print("format response")
         response_message = message_response['answer']
-        
+        print(str(response_message))
         print("add response to db")
         database.add_message(uuid, response_message, False)
         
