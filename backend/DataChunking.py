@@ -22,16 +22,14 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
 
 def main():
     persistent_client = chromadb.PersistentClient(CHROMA_PATH)
-    try:
-        db = persistent_client.get_collection("documents")
-        print("db already initialized")
-    except:
+    db = persistent_client.get_or_create_collection("documents")
+    if db.count() == 0:
+        print("Initializing new Chroma database.")
         db = Chroma(
             collection_name="documents",
             embedding_function=OpenAIEmbeddings(model=EMBEDDING_MODEL),
             persist_directory=CHROMA_PATH,
         )
-        print("Initialized new Chroma database.")
         # Step 1: Read and chunk the text file
         chunks = clean_and_chunk_file(DATA_PATH, chunk_size=512)
         print("1")
@@ -43,11 +41,11 @@ def main():
         print("3")
         cleaned_chunks = remove_duplicates(cleaned_chunks)
         print("4")
-        documents = [Document(page_content=chunk) for chunk in cleaned_chunks]
-        print("converted)")
-        # Create embeddings and initialize the database
-        db.add_documents(documents=documents)
+        insert_data_into_db(cleaned_chunks, db)
         print(f"Initializing new database at {CHROMA_PATH}.")
+    else:
+        print(f"Dataset already initialized at {CHROMA_PATH}.")
+        
 
 # Your existing chunking function
 def read_and_chunk_file(file_path, chunk_size=512):
@@ -148,22 +146,6 @@ def insert_data_into_db(split_chunks, db):
     print("converted")
     # Add documents to the database
     db.add_documents(documents=documents)
-    print(f"Added {len(documents)} chunks to the database.")
-
-def create_db2(split_chunks):
-    # remove existing database if present
-    db_exists = os.path.exists(CHROMA_PATH)
-
-    print("converting....")
-    # Wrap each chunk in a Document object
-    documents = [Document(page_content=chunk) for chunk in split_chunks]
-    print("converted)")
-    # Create embeddings and initialize the database
-    db = Chroma.from_documents(
-        documents=documents,
-        embedding=OpenAIEmbeddings(model=EMBEDDING_MODEL),
-        persist_directory=CHROMA_PATH,
-    )
     print(f"Added {len(documents)} chunks to the database.")
 
 # script entry point

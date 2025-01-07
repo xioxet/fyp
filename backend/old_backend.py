@@ -26,7 +26,11 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
 
 llm = ChatOpenAI(temperature=0.8, model="gpt-4o-mini")
 embedding = OpenAIEmbeddings(model=EMBEDDING_MODEL)
-db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding)
+db = Chroma(
+            collection_name="documents",
+            embedding_function=embedding,
+            persist_directory=CHROMA_PATH,
+        )
 
 multi_query_template = PromptTemplate(
     template=(
