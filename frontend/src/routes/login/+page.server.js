@@ -25,8 +25,7 @@ export const actions = {
             const jwt = result.message;
             cookies.set(
                 'accessToken', jwt, {
-                    secure: true,
-                    httpOnly: true,
+                    secure: false,
                     path: '/'
                 }
             )
