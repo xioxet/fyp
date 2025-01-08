@@ -21,7 +21,7 @@ UPLOAD_FOLDER = 'uploads'
 app = FastAPI()
 
 class Message(BaseModel):
-    uuid: str
+    jwt: str
     messagecontent: str
     fromuser: bool
 
@@ -53,29 +53,9 @@ def extract_text(filepath, file_type):
 async def index():
     return {"message": "ok i pull up hop out at the afterparty"}
 
-# Route for file uploads
-@app.post("/AddFile/")
-async def upload_file(file: UploadFile = File(...)):
-    if not allowed_file(file.filename):
-        raise HTTPException(status_code=400, detail="Invalid file type")
-
-    filename = secure_filename(file.filename)
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(filepath)
-
-    # Extract and save text to DATA_PATH
-    file_type = filename.rsplit('.', 1)[1].lower()
-    text = extract_text(filepath, file_type)
-    with open(DATA_PATH, "a", encoding="utf-8") as f:
-        f.write(text + "\n")
-
-    DataChunking_main()
-
-    return JSONResponse(content={"filename": filename, "file_type": file_type})
-
-@app.get("/get_messages/{uuid}/")
-async def get_messages(uuid: str):
-    messages = database.get_messages(uuid)
+@app.get("/get_messages/{accesstoken}/")
+async def get_messages(accesstoken: str):
+    messages = database.get_messages(accesstoken)
     return messages
 
 @app.post("/add_message/")
@@ -92,6 +72,8 @@ async def add_message(message: Message):
 async def reset_chat():
     return database.reset_chat()
      
+# account system
+
 @app.post("/register/")
 async def register(user: User):
     return database.add_user(user.username, user.password)
@@ -99,6 +81,10 @@ async def register(user: User):
 @app.get("/get_users/")
 async def get_users():
     return database.get_users()
+
+@app.post("/login/")
+async def login(user: User):
+    return database.verify_login(user.username, user.password)
 
 async def transform(message):
     # simulating time taken for the AI to respond

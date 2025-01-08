@@ -32,9 +32,9 @@
 {#if initialmount} 
     <Loading></Loading>
 {/if}
-<div class="relative mx-auto p-5"
+<div class="relative mx-auto p-5 flex flex-col max-h-[90vh] flex-1"
      class:opacity-0={initialmount}>
-    <div class="h-[70vh] justify-end overflow-y-auto"
+    <div class="justify-end overflow-y-auto"
     bind:this={chat}>
         {#each messages as message}
         <Message 
@@ -47,9 +47,8 @@
         <Message messageText={"Loading..."} fromUser={false}></Message>
         {/if}
     </div>
-
     <!--userinput-->
-    <div class="h-[10h]">
+    <div class="h-[10h] mt-auto">
         <form use:enhance={({formData}) => {
             console.log(formData)
             waitingformessage = true;

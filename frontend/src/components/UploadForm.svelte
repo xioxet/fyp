@@ -1,4 +1,4 @@
-<div class="mx-28 p-5">
+<div class="mx-10 p-5">
     <form method="post" enctype="multipart/form-data">
         <div class="w-100 bg-slate-700 p-5 mb-5">
             <h1 class=text-2xl>Upload files</h1>

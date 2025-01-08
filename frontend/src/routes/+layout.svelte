@@ -13,7 +13,7 @@
         <div class="grow w-1/10 bg-slate-900">
             <Sidebar></Sidebar>
         </div>
-        <div class="grow w-3/5 relative">
+        <div class="grow w-3/5 relative flex">
             {@render children()}
         </div>
     </div>
