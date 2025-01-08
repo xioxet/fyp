@@ -5,6 +5,7 @@ from random import randint
 import asyncio
 from database import add_message
 import database
+import login
 import os
 from werkzeug.utils import secure_filename
 
@@ -79,25 +80,13 @@ async def get_messages(uuid: str):
 
 @app.post("/add_message/")
 async def add_message(message: Message):
-    uuid, messagecontent, fromuser = message.uuid, message.messagecontent, message.fromuser
-    try:
-        print("add msg to db")
-        database.add_message(uuid, messagecontent, fromuser)
-        
-        print("transform_msg")
-        message_response = await backendChat.transform(messagecontent)
-        
-        print("format response")
-        response_message = message_response['answer']
-        print(str(response_message))
-        print("add response to db")
-        database.add_message(uuid, response_message, False)
-        
-        print("return response")
-        return database.get_messages(uuid)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
+    accesstoken, messagecontent, fromuser = message.jwt, message.messagecontent, message.fromuser
+    database.add_message(accesstoken, messagecontent, fromuser)
+    #message_response = await transform(messagecontent)
+    message_response = await backendChat.transform(messagecontent)
+    message = message_response['answer']
+    database.add_message(accesstoken, message, False)
+    return database.get_messages(accesstoken)
 
 @app.post("/reset_chat/")
 async def reset_chat():
