@@ -8,11 +8,13 @@ import os
 load_dotenv()
 postgres_url = os.getenv('POSTGRES_URL')
 secret_key = os.getenv('SECRET_KEY')
-
+postgres_user = os.getenv('POSTGRES_USER')
+postgres_password = os.getenv('POSTGRES_PASSWORD')
+postgres_db = os.getenv('POSTGRES_DB')
 connection = psycopg2.connect(
-    database='main', 
-    user='postgres', 
-    password='postgres', 
+    database=postgres_db, 
+    user=postgres_user, 
+    password=postgres_password, 
     host=postgres_url,
     port=5432
 )
@@ -87,7 +89,7 @@ def get_users():
 
 def verify_login(username, password):
     try:
-        SQL = "SELECT * FROM users WHERE username = (%s)"
+        SQL = "SELECT * FROM users WHERE username = %s"
         cursor.execute(SQL, (username,))
         user = cursor.fetchone()
         print(user)
@@ -102,4 +104,4 @@ def verify_login(username, password):
             return {"error":True, "message":"Invalid login credentials!"}
             
     except Exception as e:
-        return {"error":True, "message":str(e)}
+        return {"error":True, "message":str(e), "SQL":str(SQL)}, 
