@@ -42,7 +42,6 @@ export function csrf(allowedPaths) {
   }
 
 export async function handle({event, resolve}) {
-    console.log('handling...')
     try {
         const CSRF = csrf(['/chat'])
         return CSRF({event, resolve})    

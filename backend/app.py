@@ -112,7 +112,6 @@ async def upload(file: UploadFile = File(...)):
         insert_data_into_db(chunks, db)
         # ???
 
-        
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
     finally:
