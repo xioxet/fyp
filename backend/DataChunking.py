@@ -9,6 +9,7 @@ import os
 import re
 import shutil
 import chromadb
+import uuid
 from dotenv import load_dotenv
 
 # load environment variables for secure configuration
@@ -19,17 +20,16 @@ CHROMA_PATH = os.getenv("CHROMA_PATH")
 DATA_PATH = os.getenv("DATA_PATH")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
+persistent_client = chromadb.PersistentClient(CHROMA_PATH)
+db = Chroma(
+    collection_name="documents",
+    embedding_function=OpenAIEmbeddings(model=EMBEDDING_MODEL),
+    persist_directory=CHROMA_PATH,
+)
 
 def main():
-    persistent_client = chromadb.PersistentClient(CHROMA_PATH)
-    db = persistent_client.get_collection("documents")
     if db.count() == 0:
         print("Initializing new Chroma database.")
-        db = Chroma(
-            collection_name="documents",
-            embedding_function=OpenAIEmbeddings(model=EMBEDDING_MODEL),
-            persist_directory=CHROMA_PATH,
-        )
         # Step 1: Read and chunk the text file
         chunks = clean_and_chunk_file(DATA_PATH, chunk_size=512)
         print("1")
@@ -139,13 +139,31 @@ def remove_duplicates(chunks):
 
 # Function to insert data into the Chroma database
 def insert_data_into_db(split_chunks, db):
-    print("converting....")
-    # Wrap each chunk in a Document object
-    documents = [Document(page_content=chunk) for chunk in split_chunks]
-    print("converted")
-    # Add documents to the database
-    db.add_documents(documents=documents)
-    print(f"Added {len(documents)} chunks to the database.")
+    try:
+        print("attempting to insert data into database...")        # Wrap each chunk in a Document objecthjtn5rhjn5trnhj5rthjnhj5rtn
+        documents = [Document(page_content=chunk) for chunk in split_chunks]
+        print(f"converted {documents}")
+        # Add documents to the database
+        db.add_documents(documents=documents)
+        print(f"Added {len(documents)} chunks to the database.")
+        return True
+    except Exception as e:
+        print(str(e))
+        return False
+
+# need to make a different funckig ng function for some reason idfk
+def insert_individual_files(split_chunks, db):
+    try:
+        db.add(
+            documents=split_chunks,
+            ids = [str(uuid.uuid1()) for _ in range(len(split_chunks))]
+        )
+        print(f"added to {db}")
+        return True
+    except Exception as e:
+        print(str(e))
+        return False
+
 
 # script entry point
 if __name__ == "__main__":

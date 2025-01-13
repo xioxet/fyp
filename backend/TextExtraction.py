@@ -71,6 +71,16 @@ def ocr_from_images(images):
         text += "\n"
     return text
 
+def get_file_text(extension, file):
+    if extension == 'pdf':
+        return get_pdf_text([file])
+    if extension == 'docx':
+        return get_docx_text([file])
+    if extension == 'pptx':
+        return get_pptx_text([file])
+    if extension == 'xlsx':
+        return get_xlsx_text([file])
+
 # Function to extract text from PDF files using pdfminer.six
 def get_pdf_text(pdf_docs):
     print("Get pdf text")

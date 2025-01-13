@@ -19,8 +19,8 @@ connection = psycopg2.connect(
     port=5432
 )
 
+connection.autocommit = True
 cursor = connection.cursor()
-
 
 def get_messages(accesstoken):
     try:
@@ -38,8 +38,9 @@ def get_messages(accesstoken):
             }
             messages.append(message_json)
         return messages
-    except psycopg2.ProgrammingError as e:
-            return {"error":e}
+    except Exception as e:
+        print(e)
+        return {"error":e}
 
 
 def add_message(accesstoken, messagecontent, fromuser):

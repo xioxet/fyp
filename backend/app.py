@@ -11,9 +11,10 @@ from werkzeug.utils import secure_filename
 
 # old backend
 import backendChat
-from TextExtraction import get_pdf_text, get_docx_text, get_pptx_text, get_xlsx_text
+from TextExtraction import get_pdf_text, get_docx_text, get_pptx_text, get_xlsx_text, get_file_text
 #from DataChunking import clean_and_chunk_file, preprocess_chunk, remove_duplicates, insert_data_into_db, read_and_chunk_file
 from DataChunking import main as DataChunking_main
+from DataChunking import db, insert_data_into_db, chunk_text
 
 DATA_PATH = os.getenv("DATA_PATH", "./modelling/extracted_text.txt")
 UPLOAD_FOLDER = 'uploads'
@@ -62,8 +63,10 @@ async def get_messages(accesstoken: str):
 async def add_message(message: Message):
     accesstoken, messagecontent, fromuser = message.jwt, message.messagecontent, message.fromuser
     database.add_message(accesstoken, messagecontent, fromuser)
+    print(f'successfully added message')
     #message_response = await transform(messagecontent)
     message_response = await backendChat.transform(messagecontent)
+    print(f'{message_response['answer'] = }')
     message = message_response['answer']
     database.add_message(accesstoken, message, False)
     return database.get_messages(accesstoken)
@@ -96,8 +99,20 @@ async def upload(file: UploadFile = File(...)):
         directory = r'modelling/data/' + extension + r'_files/'
         print(f'retrieved file {file.filename} with extension {extension}')
         print(directory + file.filename)
+
         with open(directory + file.filename, 'wb') as f:
             f.write(contents)
+            f.close()
+
+        # temporarily add new stuff to database
+        file_text = get_file_text(extension, directory + file.filename)
+        print(file_text)
+        chunks = chunk_text(file_text)
+        print(chunks)
+        insert_data_into_db(chunks, db)
+        # ???
+
+        
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
     finally:
