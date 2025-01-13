@@ -9,6 +9,7 @@ from PIL import Image as PILImage
 from io import BytesIO
 import io
 import cv2
+from tqdm import tqdm
 import numpy as np
 import pytesseract
 from PIL import Image
@@ -74,7 +75,7 @@ def ocr_from_images(images):
 def get_pdf_text(pdf_docs):
     print("Get pdf text")
     extracted_text = ""
-    for pdf in pdf_docs:
+    for pdf in tqdm(pdf_docs):
         pages = convert_from_path(pdf)
         for page in pages:
             # Step 2: Preprocess the image (deskew)
@@ -90,7 +91,7 @@ def get_docx_text(docx_docs):
     print("Get docx text")
     text = ""
     
-    for docx in docx_docs:
+    for docx in tqdm(docx_docs):
         doc = Document(docx)
         
         # Extracting text from paragraphs
@@ -114,7 +115,7 @@ def get_pptx_text(pptx_docs):
     print("Starting get_pptx_text function")
     text = ""
     
-    for pptx in pptx_docs:
+    for pptx in tqdm(pptx_docs):
         print(f"Processing PPTX document: {pptx}")
         prs = Presentation(pptx)
         
@@ -197,7 +198,7 @@ def get_pptx_text(pptx_docs):
 def get_xlsx_text(xlsx_docs):
     print("Get xlsx text")
     text = ""
-    for xlsx in xlsx_docs:
+    for xlsx in tqdm(xlsx_docs):
         wb = openpyxl.load_workbook(xlsx)
         for sheet in wb.sheetnames:
             ws = wb[sheet]
@@ -209,10 +210,10 @@ def get_xlsx_text(xlsx_docs):
     return text
 
 # Directory paths
-pdf_dir = r'/app/modelling/data/pdf_files'
-docx_dir = r'/app/modelling/data/docx_files'
-pptx_dir = r'/app/modelling/data/pptx_files'
-xlsx_dir = r'/app/modelling/data/xlsx_files'
+pdf_dir =  r'modelling/data/pdf_files'
+docx_dir = r'modelling/data/docx_files'
+pptx_dir = r'modelling/data/pptx_files'
+xlsx_dir = r'modelling/data/xlsx_files'
 
 # Fetch file paths
 pdf_files = [os.path.join(pdf_dir, f) for f in os.listdir(pdf_dir) if f.endswith('.pdf')]

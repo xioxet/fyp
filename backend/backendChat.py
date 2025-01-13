@@ -44,6 +44,7 @@ multi_query_template = PromptTemplate(
     ),
     input_variables=["question"],
 )
+
 multiquery_retriever = MultiQueryRetriever.from_llm(
     retriever=db.as_retriever(search_kwargs={'k': 3}),
     llm=llm,

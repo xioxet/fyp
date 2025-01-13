@@ -86,13 +86,31 @@ async def get_users():
 async def login(user: User):
     return database.verify_login(user.username, user.password)
 
+@app.post("/upload/")
+async def upload(file: UploadFile = File(...)):
+    try:
+        contents = file.file.read()
+        extension = file.filename.split(".")[1]
+        if extension not in ['pdf', 'docx', 'pptx', 'xlsx']:
+            raise Exception(detail="Filetype not allowed")
+        directory = r'modelling/data/' + extension + r'_files/'
+        print(f'retrieved file {file.filename} with extension {extension}')
+        print(directory + file.filename)
+        with open(directory + file.filename, 'wb') as f:
+            f.write(contents)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
+    finally:
+        file.file.close()
+    
+    return {"message": f"Successfully uploaded {file.filename}"}
+
+
 async def transform(message):
     # simulating time taken for the AI to respond
     await asyncio.sleep(1)
     return f'{randint(1000, 9999)} {message}'
 
-
-DataChunking_main()
 
 if __name__ == "__main__":
     import uvicorn

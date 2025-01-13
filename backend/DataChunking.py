@@ -45,8 +45,7 @@ def main():
         print(f"Initializing new database at {CHROMA_PATH}.")
     else:
         print(f"Dataset already initialized at {CHROMA_PATH}.")
-        
-
+    
 # Your existing chunking function
 def read_and_chunk_file(file_path, chunk_size=512):
     with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
