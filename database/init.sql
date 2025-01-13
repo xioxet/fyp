@@ -1,4 +1,4 @@
-CREATE DATABASE main;
+-- CREATE DATABASE main;
 \c main;
 
 CREATE TABLE messages (

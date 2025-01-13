@@ -3,7 +3,7 @@ import { BACKEND_URL } from "$env/static/private";
 import { redirect } from '@sveltejs/kit';
 
 export const actions = {
-	default: async ({fetch, params, request, cookies}) => {
+	default: async ({ fetch, params, request, cookies }) => {
 		const formData = await request.formData();
     	const username = formData.get('username');
         const password = formData.get('password');
@@ -31,6 +31,6 @@ export const actions = {
             )
             redirect(302, '/chat')
         }
-		console.log(messages);
+		console.log(result.message);
 	}
 }

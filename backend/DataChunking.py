@@ -22,7 +22,7 @@ EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
 
 def main():
     persistent_client = chromadb.PersistentClient(CHROMA_PATH)
-    db = persistent_client.get_or_create_collection("documents")
+    db = persistent_client.get_collection("documents")
     if db.count() == 0:
         print("Initializing new Chroma database.")
         db = Chroma(
