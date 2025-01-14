@@ -151,20 +151,6 @@ def insert_data_into_db(split_chunks, db):
         print(str(e))
         return False
 
-# need to make a different funckig ng function for some reason idfk
-def insert_individual_files(split_chunks, db):
-    try:
-        db.add(
-            documents=split_chunks,
-            ids = [str(uuid.uuid1()) for _ in range(len(split_chunks))]
-        )
-        print(f"added to {db}")
-        return True
-    except Exception as e:
-        print(str(e))
-        return False
-
-
 # script entry point
 if __name__ == "__main__":
     main()

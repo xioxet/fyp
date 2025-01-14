@@ -73,27 +73,46 @@ def ocr_from_images(images):
 
 def get_file_text(extension, file):
     if extension == 'pdf':
-        return get_pdf_text([file])
+        return get_one_pdf(file)
     if extension == 'docx':
-        return get_docx_text([file])
+        return get_one_docx(file)
     if extension == 'pptx':
-        return get_pptx_text([file])
+        return get_one_pptx(file)
     if extension == 'xlsx':
-        return get_xlsx_text([file])
+        return get_one_xlsx(file)
+
+
+def get_one_pdf(pdf):
+    pages = convert_from_path(pdf)
+    for page in pages:
+        preprocessed_image = deskew(np.array(page))
+        return extract_text_from_image(preprocessed_image)
+        
+def get_one_docx(docx):
+    doc = Document(docx)
+    
+    for para in doc.paragraphs:
+        text += para.text + "\n"
+    
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                text += cell.text + " "
+            text += "\n"
+    
+    images = extract_images_from_docx(docx)
+    text += ocr_from_images(images)
+    return text
 
 # Function to extract text from PDF files using pdfminer.six
 def get_pdf_text(pdf_docs):
     print("Get pdf text")
     extracted_text = ""
     for pdf in tqdm(pdf_docs):
-        pages = convert_from_path(pdf)
-        for page in pages:
-            # Step 2: Preprocess the image (deskew)
-            preprocessed_image = deskew(np.array(page))
-        
-            # Step 3: Extract text using OCR
-            text = extract_text_from_image(preprocessed_image)
-            extracted_text+=(text)
+        try:
+            extracted_text += get_one_pdf(pdf)
+        except:
+            print(f'failed to get {pdf}, skipping')
     return extracted_text
 
 # Function to extract text from DOCX files including text from images using OCR
@@ -102,104 +121,112 @@ def get_docx_text(docx_docs):
     text = ""
     
     for docx in tqdm(docx_docs):
-        doc = Document(docx)
-        
-        # Extracting text from paragraphs
-        for para in doc.paragraphs:
-            text += para.text + "\n"
-        
-        # Extracting text from tables
-        for table in doc.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    text += cell.text + " "
-                text += "\n"  # Newline after each row
-        
-        # Extract images and perform OCR
-        images = extract_images_from_docx(docx)
-        text += ocr_from_images(images)
-    
+        try:
+            text += get_one_docx(docx)
+        except:
+            print(f'failed to get {docx}, skipping')
     return text
+
+def get_one_pptx(pptx):
+    print(f"Processing PPTX document: {pptx}")
+    text = ''
+    prs = Presentation(pptx)
+    
+    for slide_index, slide in enumerate(prs.slides):
+        print(f"Processing slide {slide_index + 1}/{len(prs.slides)}")
+        for shape_index, shape in enumerate(slide.shapes):
+            print(f"Processing shape {shape_index + 1}/{len(slide.shapes)}")
+            if shape.shape_type == 13:  # This is the image shape type
+                try:
+                    print("Found image shape")
+                    # Extract image bytes
+                    image = shape.image
+                    image_bytes = image.blob
+                    
+                    # Open image with Pillow
+                    try:
+                        img = Image.open(io.BytesIO(image_bytes))
+                        print("Image opened successfully")
+                    except IOError:
+                        print("Image is WMF, converting to PNG")
+                        # If the image is WMF, convert it to PNG
+                        image_bytes = convert_wmf_to_png(image_bytes)
+                        img = Image.open(io.BytesIO(image_bytes))
+                        print("WMF image converted to PNG and opened successfully")
+                    
+                    # Handle transparency and convert image to RGBA (if it's a palette-based image with transparency)
+                    if img.mode == 'RGBA':
+                        img = img.convert('RGBA')  # Ensure it's RGBA if it's not
+                    elif img.mode == 'P' and 'transparency' in img.info:
+                        img = img.convert('RGBA')  # Convert palette-based image with transparency to RGBA
+                    elif img.mode == 'P':
+                        img = img.convert('RGB')  # Convert palette image without transparency to RGB
+                    elif img.mode == 'LA':
+                        img = img.convert('RGBA')  # If image mode is LA (Luminance + Alpha), convert to RGBA
+                    elif img.mode == 'L':
+                        img = img.convert('RGB')  # Convert grayscale to RGB for OCR
+                    
+                    print("Image mode converted successfully")
+                    
+                    # Convert PIL image to NumPy array
+                    img_np = np.array(img)
+                    print("Image converted to NumPy array")
+                    
+                    # Apply deskew (if necessary)
+                    img_np = deskew(img_np)
+                    print("Deskew applied to image")
+                    
+                    # Perform OCR on the image
+                    text += pytesseract.image_to_string(img_np) + "\n"
+                    print("OCR performed on image")
+                except Exception as e:
+                    print(f"Error processing image: {e}")
+            
+            if hasattr(shape, "text"):
+                text += shape.text + "\n"
+                print("Text extracted from shape")
+            
+            # Check if the shape is a table
+            if shape.has_table:
+                print("Found table shape")
+                table = shape.table
+                for row_index, row in enumerate(table.rows):
+                    for cell_index, cell in enumerate(row.cells):
+                        text += cell.text + "\t"  # Add a tab space between table columns
+                        print(f"Text extracted from table cell {cell_index + 1}/{len(row.cells)} in row {row_index + 1}/{len(table.rows)}")
+                    text += "\n"  # New line after each row
+        
+        # Extract text from speaker notes (if any)
+        if slide.has_notes_slide:
+            notes_slide = slide.notes_slide
+            if notes_slide:
+                notes_text = notes_slide.notes_text_frame.text
+                text += f"{notes_text}\n"
+                print("Text extracted from speaker notes")
+    return text
+
+def get_one_xlsx(xlsx):
+    text = ''
+    wb = openpyxl.load_workbook(xlsx)
+    for sheet in wb.sheetnames:
+        ws = wb[sheet]
+        for row in ws.iter_rows():
+            for cell in row:
+                if cell.value is not None:
+                    text += str(cell.value) + " "
+            text += "\n"
+    return text
+
 
 def get_pptx_text(pptx_docs):
     print("Starting get_pptx_text function")
     text = ""
     
     for pptx in tqdm(pptx_docs):
-        print(f"Processing PPTX document: {pptx}")
-        prs = Presentation(pptx)
-        
-        for slide_index, slide in enumerate(prs.slides):
-            print(f"Processing slide {slide_index + 1}/{len(prs.slides)}")
-            for shape_index, shape in enumerate(slide.shapes):
-                print(f"Processing shape {shape_index + 1}/{len(slide.shapes)}")
-                if shape.shape_type == 13:  # This is the image shape type
-                    try:
-                        print("Found image shape")
-                        # Extract image bytes
-                        image = shape.image
-                        image_bytes = image.blob
-                        
-                        # Open image with Pillow
-                        try:
-                            img = Image.open(io.BytesIO(image_bytes))
-                            print("Image opened successfully")
-                        except IOError:
-                            print("Image is WMF, converting to PNG")
-                            # If the image is WMF, convert it to PNG
-                            image_bytes = convert_wmf_to_png(image_bytes)
-                            img = Image.open(io.BytesIO(image_bytes))
-                            print("WMF image converted to PNG and opened successfully")
-                        
-                        # Handle transparency and convert image to RGBA (if it's a palette-based image with transparency)
-                        if img.mode == 'RGBA':
-                            img = img.convert('RGBA')  # Ensure it's RGBA if it's not
-                        elif img.mode == 'P' and 'transparency' in img.info:
-                            img = img.convert('RGBA')  # Convert palette-based image with transparency to RGBA
-                        elif img.mode == 'P':
-                            img = img.convert('RGB')  # Convert palette image without transparency to RGB
-                        elif img.mode == 'LA':
-                            img = img.convert('RGBA')  # If image mode is LA (Luminance + Alpha), convert to RGBA
-                        elif img.mode == 'L':
-                            img = img.convert('RGB')  # Convert grayscale to RGB for OCR
-                        
-                        print("Image mode converted successfully")
-                        
-                        # Convert PIL image to NumPy array
-                        img_np = np.array(img)
-                        print("Image converted to NumPy array")
-                        
-                        # Apply deskew (if necessary)
-                        img_np = deskew(img_np)
-                        print("Deskew applied to image")
-                        
-                        # Perform OCR on the image
-                        text += pytesseract.image_to_string(img_np) + "\n"
-                        print("OCR performed on image")
-                    except Exception as e:
-                        print(f"Error processing image: {e}")
-                
-                if hasattr(shape, "text"):
-                    text += shape.text + "\n"
-                    print("Text extracted from shape")
-                
-                # Check if the shape is a table
-                if shape.has_table:
-                    print("Found table shape")
-                    table = shape.table
-                    for row_index, row in enumerate(table.rows):
-                        for cell_index, cell in enumerate(row.cells):
-                            text += cell.text + "\t"  # Add a tab space between table columns
-                            print(f"Text extracted from table cell {cell_index + 1}/{len(row.cells)} in row {row_index + 1}/{len(table.rows)}")
-                        text += "\n"  # New line after each row
-            
-            # Extract text from speaker notes (if any)
-            if slide.has_notes_slide:
-                notes_slide = slide.notes_slide
-                if notes_slide:
-                    notes_text = notes_slide.notes_text_frame.text
-                    text += f"{notes_text}\n"
-                    print("Text extracted from speaker notes")
+        try: 
+            text += get_one_pptx(pptx)
+        except: 
+            print(f'failed to get {pptx}, skipping')
     
     print("Finished get_pptx_text function")
     return text
@@ -209,14 +236,10 @@ def get_xlsx_text(xlsx_docs):
     print("Get xlsx text")
     text = ""
     for xlsx in tqdm(xlsx_docs):
-        wb = openpyxl.load_workbook(xlsx)
-        for sheet in wb.sheetnames:
-            ws = wb[sheet]
-            for row in ws.iter_rows():
-                for cell in row:
-                    if cell.value is not None:
-                        text += str(cell.value) + " "
-                text += "\n"
+        try:
+            text += get_one_xlsx(xlsx)
+        except:
+            print(f'failed to get {xlsx}, skipping')
     return text
 
 # Directory paths

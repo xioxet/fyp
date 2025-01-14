@@ -66,7 +66,7 @@ async def add_message(message: Message):
     print(f'successfully added message')
     #message_response = await transform(messagecontent)
     message_response = await backendChat.transform(messagecontent)
-    print(f'{message_response['answer'] = }')
+    print(f'{message_response["answer"] = }')
     message = message_response['answer']
     database.add_message(accesstoken, message, False)
     return database.get_messages(accesstoken)
@@ -106,18 +106,18 @@ async def upload(file: UploadFile = File(...)):
 
         # temporarily add new stuff to database
         file_text = get_file_text(extension, directory + file.filename)
-        print(file_text)
+        print(f'{file_text = }')
         chunks = chunk_text(file_text)
-        print(chunks)
-        insert_data_into_db(chunks, db)
+        if not insert_data_into_db(chunks, db):
+            raise Exception("Failed to insert data into database.")
         # ???
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
+        return {"error":True, "message":str(e)}
     finally:
         file.file.close()
     
-    return {"message": f"Successfully uploaded {file.filename}"}
+    return {"error": False, "message": f"Successfully uploaded {file.filename}"}
 
 
 async def transform(message):
