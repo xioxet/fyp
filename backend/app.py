@@ -66,7 +66,7 @@ async def add_message(message: Message):
     print(f'successfully added message')
     #message_response = await transform(messagecontent)
     message_response = await backendChat.transform(messagecontent)
-    print(f'{message_response['answer'] = }')
+    print(f"{message_response['answer'] = }")
     message = message_response['answer']
     database.add_message(accesstoken, message, False)
     return database.get_messages(accesstoken)
@@ -125,6 +125,8 @@ async def transform(message):
     await asyncio.sleep(1)
     return f'{randint(1000, 9999)} {message}'
 
+# Checks if vector database is empty and if so, populates it. 
+DataChunking_main()
 
 if __name__ == "__main__":
     import uvicorn

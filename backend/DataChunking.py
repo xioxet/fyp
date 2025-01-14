@@ -20,7 +20,7 @@ CHROMA_PATH = os.getenv("CHROMA_PATH")
 DATA_PATH = os.getenv("DATA_PATH")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
-persistent_client = chromadb.PersistentClient(CHROMA_PATH)
+#persistent_client = chromadb.PersistentClient(CHROMA_PATH)
 db = Chroma(
     collection_name="documents",
     embedding_function=OpenAIEmbeddings(model=EMBEDDING_MODEL),
@@ -28,7 +28,9 @@ db = Chroma(
 )
 
 def main():
-    if db.count() == 0:
+    persistent_client = chromadb.PersistentClient(CHROMA_PATH)
+    collection = persistent_client.get_collection("documents")
+    if collection.count() == 0:
         print("Initializing new Chroma database.")
         # Step 1: Read and chunk the text file
         chunks = clean_and_chunk_file(DATA_PATH, chunk_size=512)
