@@ -28,7 +28,8 @@ db = Chroma(
 )
 
 def main():
-    if db.count() == 0:
+    print(f'{len(db.get()["documents"])}')
+    if len(db.get()['documents']) == 0:
         print("Initializing new Chroma database.")
         # Step 1: Read and chunk the text file
         chunks = clean_and_chunk_file(DATA_PATH, chunk_size=512)

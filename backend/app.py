@@ -125,6 +125,7 @@ async def transform(message):
     await asyncio.sleep(1)
     return f'{randint(1000, 9999)} {message}'
 
+DataChunking_main()
 
 if __name__ == "__main__":
     import uvicorn
