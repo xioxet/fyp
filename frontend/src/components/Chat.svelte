@@ -50,11 +50,9 @@
     <!--userinput-->
     <div class="h-[10h] mt-auto">
         <form use:enhance={({formData}) => {
-            console.log(formData)
             waitingformessage = true;
             tempmessagetext = formData.get('message');
             return async ({ update }) => {
-                console.log('does this ever get triggered')
                 update().then(function() {
                     scrollToBottom();
                     waitingformessage = false;

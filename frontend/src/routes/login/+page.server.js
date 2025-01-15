@@ -1,6 +1,7 @@
 import { browser } from "$app/environment";
 import { BACKEND_URL } from "$env/static/private";
 import { redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 
 export const actions = {
 	default: async ({ fetch, params, request, cookies }) => {
@@ -20,7 +21,9 @@ export const actions = {
 		})
 		const result = await response.json();
         if (result.error) {
-            console.log(result.message);
+			return fail(400, {
+				error: result.message
+			})
         } else {
             const jwt = result.message;
             cookies.set(
@@ -31,6 +34,5 @@ export const actions = {
             )
             redirect(302, '/chat')
         }
-		console.log(result.message);
 	}
 }

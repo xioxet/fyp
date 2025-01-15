@@ -97,6 +97,11 @@ async def upload(file: UploadFile = File(...)):
         extension = file.filename.split(".")[1]
         if extension not in ['pdf', 'docx', 'pptx', 'xlsx']:
             raise Exception(detail="Filetype not allowed")
+        
+        #  SUGGESTION: Use dedicated uploads folder instead? Separated by file type of course.
+        #  Don't want to mix up the base dataset with the uploads that may not be relevant
+        #  Can implement a way to check the uploads folder on startup and add to the vector db if it is empty later on.
+
         directory = r'modelling/data/' + extension + r'_files/'
         print(f'retrieved file {file.filename} with extension {extension}')
         print(directory + file.filename)
