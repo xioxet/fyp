@@ -64,6 +64,7 @@ async def get_messages(accesstoken: str):
 async def add_message(message: Message):
     accesstoken, messagecontent, fromuser = message.jwt, message.messagecontent, message.fromuser
     database.add_message(accesstoken, messagecontent, fromuser)
+    print(messagecontent)
     print(f'successfully added message')
     #message_response = await transform(messagecontent)
     message_response = await backendChat.transform(messagecontent)
@@ -143,18 +144,20 @@ async def classify(file: UploadFile = File(...)):
 
         # temporarily add new stuff to database
         file_text = get_file_text(extension, directory + file.filename)
-        print(file_text)
-        #message_response = await transform(messagecontent)
+        print("classifying text")
         message_response = await backendClassification.classify_text(file_text)
         print(f"{message_response['answer'] = }")
-        message = message_response['answer']
 
+        # Return the classification and summary in the response
+        return JSONResponse(content={
+            "success": True,
+            "classification": message_response['answer'],
+        })
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
     finally:
         file.file.close()
-    
-    return {"message": f"Successfully uploaded {file.filename}"}
 
 
 async def transform(message):

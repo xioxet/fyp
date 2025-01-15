@@ -33,7 +33,7 @@ db = Chroma(
 # Define prompt templates
 multi_query_template = PromptTemplate(
     template=(
-        "The user has provided the text content of a file: {text}.\n"
+        "The user has provided the text content of a file: {question}.\n"
         "1. First, check if the text contains multiple sections or topics. "
         "If yes, split the text into distinct sections if there are multiple and move on to point 2."
         "Else, just return the text, and break.\n"
@@ -41,7 +41,7 @@ multi_query_template = PromptTemplate(
         "similar but slightly different relevant results.\n"
         "Return each section on a new line with its rephrasings.\n"
     ),
-    input_variables=["text"],
+    input_variables=["question"],
 )
 multiquery_retriever = MultiQueryRetriever.from_llm(
     retriever=db.as_retriever(search_kwargs={'k': 3}),
@@ -59,7 +59,7 @@ contextualize_q_system_prompt = (
 contextualize_q_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", "Reformulate standalone sections from the text content."),
-        MessagesPlaceholder("text_content"),
+        MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ]
 )
@@ -75,6 +75,7 @@ system_prompt = (
     "Classify the following text and avoid giving any harmful, inappropriate, or biased content. "
     "Respond respectfully and ethically. Do not classify inappropriate or harmful content. "
     "Classify the text into one of the following categories: Official(Open), Official(Closed), Restricted, Confidential, Secret or Top Secret."
+    "Explain your reasoning as well based on the file contents."
     "Keep the classification concise."
     "\n\n"
     "{context}"
@@ -84,7 +85,7 @@ system_prompt = (
 classification_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
-        MessagesPlaceholder("text_content"),
+        MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ]
 )
@@ -95,30 +96,30 @@ rag_chain = create_retrieval_chain(history_aware_retriever, classification_chain
 
 class State(TypedDict):
     input: str
-    text_content: Annotated[Sequence[BaseMessage], add_messages]
+    chat_history: Annotated[Sequence[BaseMessage], add_messages]
     context: str
-    classification: str
+    answer: str
 
 def call_model(state: State):
     response = rag_chain.invoke(state)
     return {
-        "text_content": [
+        "chat_history": [
             HumanMessage(state["input"]),
-            AIMessage(response["classification"]),
+            AIMessage(response["answer"]),
         ],
         "context": response["context"],
-        "classification": response["classification"],
+        "answer": response["answer"],
     }
 
 workflow = StateGraph(state_schema=State)
 workflow.add_edge(START, "model")
 workflow.add_node("model", call_model)
 memory = MemorySaver()
-app = workflow.compile(checkpointer=memory)
+classify = workflow.compile(checkpointer=memory)
 
 config = {"configurable": {"thread_id": "Classification"}}
 
 async def classify_text(text, config=config):
-    state = {"input": text, "text_content": [], "context": "", "classification": ""}
-    response = app.invoke(state, config=config)
+    state = {"input": text, "chat_history": [], "context": "", "answer": ""}
+    response = classify.invoke(state, config=config)
     return response
