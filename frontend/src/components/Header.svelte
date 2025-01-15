@@ -5,6 +5,7 @@
         <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/login'>login</a>
         <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/upload'>upload</a>
         <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/chat'>chat</a>
+        <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/classify'>classify</a>
         <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/'>home</a>
     </div>
 </div>

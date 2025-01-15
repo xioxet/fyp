@@ -11,6 +11,7 @@ from werkzeug.utils import secure_filename
 
 # old backend
 import backendChat
+import backendClassification
 from TextExtraction import get_pdf_text, get_docx_text, get_pptx_text, get_xlsx_text, get_file_text
 #from DataChunking import clean_and_chunk_file, preprocess_chunk, remove_duplicates, insert_data_into_db, read_and_chunk_file
 from DataChunking import main as DataChunking_main
@@ -111,6 +112,37 @@ async def upload(file: UploadFile = File(...)):
         print(chunks)
         insert_data_into_db(chunks, db)
         # ???
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
+    finally:
+        file.file.close()
+    
+    return {"message": f"Successfully uploaded {file.filename}"}
+
+#Does not work yet
+@app.post("/classify/")
+async def classify(file: UploadFile = File(...)):
+    try:
+        contents = file.file.read()
+        extension = file.filename.split(".")[1]
+        if extension not in ['pdf', 'docx', 'pptx', 'xlsx']:
+            raise Exception(detail="Filetype not allowed")
+        directory = r'modelling/data/' + extension + r'_files/'
+        print(f'retrieved file {file.filename} with extension {extension}')
+        print(directory + file.filename)
+
+        with open(directory + file.filename, 'wb') as f:
+            f.write(contents)
+            f.close()
+
+        # temporarily add new stuff to database
+        file_text = get_file_text(extension, directory + file.filename)
+        print(file_text)
+        #message_response = await transform(messagecontent)
+        message_response = await backendClassification.classify_text(file_text)
+        print(f"{message_response['answer'] = }")
+        message = message_response['answer']
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
