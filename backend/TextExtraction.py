@@ -90,7 +90,8 @@ def get_one_pdf(pdf):
         
 def get_one_docx(docx):
     doc = Document(docx)
-    
+    text = ""
+
     for para in doc.paragraphs:
         text += para.text + "\n"
     

@@ -98,21 +98,20 @@ async def upload(file: UploadFile = File(...)):
         extension = file.filename.split(".")[1]
         if extension not in ['pdf', 'docx', 'pptx', 'xlsx']:
             raise Exception(detail="Filetype not allowed")
-        
-        #  SUGGESTION: Use dedicated uploads folder instead? Separated by file type of course.
-        #  Don't want to mix up the base dataset with the uploads that may not be relevant
-        #  Can implement a way to check the uploads folder on startup and add to the vector db if it is empty later on.
+        # set upload directory and create if it doesn't exist
+        directory = os.path.join('uploads', 'data', f'{extension}_files')
+        os.makedirs(directory, exist_ok=True)
 
-        directory = r'modelling/data/' + extension + r'_files/'
         print(f'retrieved file {file.filename} with extension {extension}')
-        print(directory + file.filename)
+        file_path = os.path.join(directory, file.filename)
+        print(file_path)
 
-        with open(directory + file.filename, 'wb') as f:
+        with open(file_path, 'wb') as f:
             f.write(contents)
             f.close()
 
         # temporarily add new stuff to database
-        file_text = get_file_text(extension, directory + file.filename)
+        file_text = get_file_text(extension, file_path)
         print(file_text)
         chunks = chunk_text(file_text)
         print(chunks)
@@ -126,7 +125,6 @@ async def upload(file: UploadFile = File(...)):
     
     return {"message": f"Successfully uploaded {file.filename}"}
 
-#Does not work yet
 @app.post("/classify/")
 async def classify(file: UploadFile = File(...)):
     try:
@@ -134,16 +132,21 @@ async def classify(file: UploadFile = File(...)):
         extension = file.filename.split(".")[1]
         if extension not in ['pdf', 'docx', 'pptx', 'xlsx']:
             raise Exception(detail="Filetype not allowed")
-        directory = r'modelling/data/' + extension + r'_files/'
-        print(f'retrieved file {file.filename} with extension {extension}')
-        print(directory + file.filename)
+        
+        # set upload directory and create if it doesn't exist
+        directory = os.path.join('uploads', 'classify', f'{extension}_files')
+        os.makedirs(directory, exist_ok=True)
 
-        with open(directory + file.filename, 'wb') as f:
+        print(f'retrieved file {file.filename} with extension {extension}')
+        file_path = os.path.join(directory, file.filename)
+        print(file_path)
+
+        with open(file_path, 'wb') as f:
             f.write(contents)
             f.close()
 
         # temporarily add new stuff to database
-        file_text = get_file_text(extension, directory + file.filename)
+        file_text = get_file_text(extension, file_path)
         print("classifying text")
         message_response = await backendClassification.classify_text(file_text)
         print(f"{message_response['answer'] = }")
