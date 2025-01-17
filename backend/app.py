@@ -145,8 +145,14 @@ async def classify(file: UploadFile = File(...)):
             f.write(contents)
             f.close()
 
-        # temporarily add new stuff to database
+        # extract text
         file_text = get_file_text(extension, file_path)
+
+        # If uploaded file very large, prevent overusing token by truncating middle
+        # 80,000 characters = 20,000 tokens
+        if len(file_text) > 80000:
+            file_text = file_text[:40000] + file_text[-40000:]
+
         print("classifying text")
         message_response = await backendClassification.classify_text(file_text)
         print(f"{message_response['answer'] = }")
