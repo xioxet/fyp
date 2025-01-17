@@ -128,6 +128,7 @@ async def upload(file: UploadFile = File(...)):
 @app.post("/classify/")
 async def classify(file: UploadFile = File(...)):
     try:
+        print("reading file")
         contents = file.file.read()
         extension = file.filename.split(".")[1]
         if extension not in ['pdf', 'docx', 'pptx', 'xlsx']:
@@ -150,9 +151,10 @@ async def classify(file: UploadFile = File(...)):
 
         # If uploaded file very large, prevent overusing token by truncating middle
         # 80,000 characters = 20,000 tokens
+        print("the length of this file is: " + str(len(file_text)))
         if len(file_text) > 80000:
+            print("file too large, truncating text")
             file_text = file_text[:40000] + file_text[-40000:]
-
         print("classifying text")
         message_response = await backendClassification.classify_text(file_text)
         print(f"{message_response['answer'] = }")

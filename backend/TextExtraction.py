@@ -83,10 +83,13 @@ def get_file_text(extension, file):
 
 
 def get_one_pdf(pdf):
+    extracted_text = ""
+    extracted_text += extract_text(pdf)
     pages = convert_from_path(pdf)
     for page in pages:
         preprocessed_image = deskew(np.array(page))
-        return extract_text_from_image(preprocessed_image)
+        extracted_text += extract_text_from_image(preprocessed_image)
+    return extracted_text
         
 def get_one_docx(docx):
     doc = Document(docx)
@@ -135,8 +138,7 @@ def get_one_pptx(pptx):
     
     for slide_index, slide in enumerate(prs.slides):
         print(f"Processing slide {slide_index + 1}/{len(prs.slides)}")
-        for shape_index, shape in enumerate(slide.shapes):
-            print(f"Processing shape {shape_index + 1}/{len(slide.shapes)}")
+        for shape in enumerate(slide.shapes):
             if shape.shape_type == 13:  # This is the image shape type
                 try:
                     print("Found image shape")
@@ -147,13 +149,11 @@ def get_one_pptx(pptx):
                     # Open image with Pillow
                     try:
                         img = Image.open(io.BytesIO(image_bytes))
-                        print("Image opened successfully")
                     except IOError:
                         print("Image is WMF, converting to PNG")
                         # If the image is WMF, convert it to PNG
                         image_bytes = convert_wmf_to_png(image_bytes)
                         img = Image.open(io.BytesIO(image_bytes))
-                        print("WMF image converted to PNG and opened successfully")
                     
                     # Handle transparency and convert image to RGBA (if it's a palette-based image with transparency)
                     if img.mode == 'RGBA':
@@ -171,11 +171,9 @@ def get_one_pptx(pptx):
                     
                     # Convert PIL image to NumPy array
                     img_np = np.array(img)
-                    print("Image converted to NumPy array")
                     
                     # Apply deskew (if necessary)
                     img_np = deskew(img_np)
-                    print("Deskew applied to image")
                     
                     # Perform OCR on the image
                     text += pytesseract.image_to_string(img_np) + "\n"
@@ -189,12 +187,10 @@ def get_one_pptx(pptx):
             
             # Check if the shape is a table
             if shape.has_table:
-                print("Found table shape")
                 table = shape.table
                 for row_index, row in enumerate(table.rows):
                     for cell_index, cell in enumerate(row.cells):
                         text += cell.text + "\t"  # Add a tab space between table columns
-                        print(f"Text extracted from table cell {cell_index + 1}/{len(row.cells)} in row {row_index + 1}/{len(table.rows)}")
                     text += "\n"  # New line after each row
         
         # Extract text from speaker notes (if any)
@@ -203,7 +199,6 @@ def get_one_pptx(pptx):
             if notes_slide:
                 notes_text = notes_slide.notes_text_frame.text
                 text += f"{notes_text}\n"
-                print("Text extracted from speaker notes")
     return text
 
 def get_one_xlsx(xlsx):
