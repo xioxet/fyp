@@ -8,6 +8,8 @@ import database
 import login
 import os
 from werkzeug.utils import secure_filename
+from fastapi.middleware.cors import CORSMiddleware
+
 
 # old backend
 import backendChat
@@ -18,9 +20,19 @@ from DataChunking import main as DataChunking_main
 from DataChunking import db, insert_data_into_db, chunk_text
 
 DATA_PATH = os.getenv("DATA_PATH", "./modelling/extracted_text.txt")
+PUBLIC_FRONTEND_URL = os.getenv("PUBLIC_FRONTEND_URL", "http://localhost:4173")
 UPLOAD_FOLDER = 'uploads'
 
 app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[PUBLIC_FRONTEND_URL],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Message(BaseModel):
     jwt: str
@@ -53,6 +65,7 @@ def extract_text(filepath, file_type):
 
 @app.get("/")
 async def index():
+    print("wahaha")
     return {"message": "ok i pull up hop out at the afterparty"}
 
 @app.get("/get_messages/{accesstoken}/")

@@ -17,6 +17,7 @@ services:
         - PROXY_URL=${PROXY_URL}
         - FRONTEND_URL=${FRONTEND_URL}
         - BACKEND_URL=${BACKEND_URL}
+        - PUBLIC_BACKEND_URL=${PUBLIC_BACKEND_URL}
         - POSTGRES_URL=${POSTGRES_URL}
     ports:
       - "4173:4173"
