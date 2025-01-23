@@ -5,7 +5,11 @@ import { redirect } from '@sveltejs/kit';
 export async function load({ fetch, params, cookies }) {
 	const accessToken = cookies.get('accessToken');
 	if (accessToken) {
-		const response = await fetch(`http://${BACKEND_URL}:5000/get_messages/${accessToken}/`);
+		const response = await fetch(`http://${BACKEND_URL}:5000/get_messages/`, {
+			'method': 'GET',
+			'headers': {'Authorization': `${accessToken}`}
+		}
+		);
 		var messages = await response.json();
 		return { messages };
 	} else {
@@ -20,11 +24,11 @@ export const actions = {
     	const messagecontent = formData.get('message');
 		const response = await fetch(`http://${BACKEND_URL}:5000/add_message/`, {
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'Authorization': `${accessToken}`
 			},
 			method: "POST",
 			body: JSON.stringify({
-				"jwt":accessToken,
 				"messagecontent":messagecontent,
 				"fromuser":true
 			})

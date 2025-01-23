@@ -38,13 +38,13 @@
     bind:this={chat}>
         {#each messages as message}
         <Message 
-        messageText={message.messagecontent} fromUser={message.fromuser}>
+        messageText={message.messagecontent} fromUser={message.fromuser} loading={false}>
         </Message>
         {/each}
 
         {#if waitingformessage}
-        <Message messageText={tempmessagetext} fromUser={true}></Message>
-        <Message messageText={"Loading..."} fromUser={false}></Message>
+        <Message messageText={tempmessagetext} fromUser={true} loading={false}></Message>
+        <Message messageText={"Loading..."} fromUser={false} loading={true}></Message>
         {/if}
     </div>
     <!--userinput-->

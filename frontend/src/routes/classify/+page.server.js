@@ -3,8 +3,8 @@ import { BACKEND_URL } from "$env/static/private";
 
 export const actions = {
     default: async ({ fetch, params, request }) => {
-        const formData = await request.formData();
-        
+        console.log("submitted...");
+        const formData = await request.formData();    
         const response = await fetch(`http://${BACKEND_URL}:5000/classify/`, 
             {
                 method: 'POST',
@@ -12,18 +12,17 @@ export const actions = {
             }
         );
         const result = await response.json();
-        console.log(result);
+        console.log('result: ', result);
         if (result.error) {
             console.log('error triggered');
             return fail(400, {
                 error: result.message
             });
         } else {
+            console.log('returning...');
             return {
                 success: true,
-                data: {
-                    classification: result.classification,
-                }
+                classification: result.classification
             };
         }
     }
