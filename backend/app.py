@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from random import randint
@@ -35,7 +35,6 @@ app.add_middleware(
 )
 
 class Message(BaseModel):
-    jwt: str
     messagecontent: str
     fromuser: bool
 
@@ -68,14 +67,16 @@ async def index():
     print("wahaha")
     return {"message": "ok i pull up hop out at the afterparty"}
 
-@app.get("/get_messages/{accesstoken}/")
-async def get_messages(accesstoken: str):
+@app.get("/get_messages/")
+async def get_messages(request: Request):
+    accesstoken = request.headers['Authorization']
     messages = database.get_messages(accesstoken)
     return messages
 
 @app.post("/add_message/")
-async def add_message(message: Message):
-    accesstoken, messagecontent, fromuser = message.jwt, message.messagecontent, message.fromuser
+async def add_message(request: Request, message: Message):
+    accesstoken = request.headers['Authorization']
+    messagecontent, fromuser = message.messagecontent, message.fromuser
     database.add_message(accesstoken, messagecontent, fromuser)
     print(messagecontent)
     print(f'successfully added message')
@@ -136,7 +137,7 @@ async def upload(file: UploadFile = File(...)):
     finally:
         file.file.close()
     
-    return {"message": f"Successfully uploaded {file.filename}"}
+    return {"success": True, "message": f"Successfully uploaded {file.filename}"}
 
 @app.post("/classify/")
 async def classify(file: UploadFile = File(...)):

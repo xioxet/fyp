@@ -3,8 +3,8 @@
     import { writable } from 'svelte/store';
 
     let { data , form } = $props();
-    let waitingfordata = writable(false);
-    let classification = writable('');
+    let waitingfordata = $state(false);
+    console.log(form);
 
 </script>
 
@@ -13,14 +13,15 @@
         waitingfordata = true;
         // Not working. Backend logs show response fine. Frontend outputs error.
         return async ({ update }) => {
-                update().then(function(response) {
-                    try {
-                        classification.set(response.data.classification);
-                    }
-                    catch (error) {
-                        console.error('Error during form submission:', error);
-                        classification.set('Document upload error: ' + error.message);
-                    }
+                update().then(function() {
+                    //console.log('response: ', response);
+                    //try {
+                    //    classification.set(response.data.classification);
+                    //}
+                    //catch (error) {
+                    //    console.error('Error during form submission:', error);
+                    //    classification.set('Document upload error: ' + error.message);
+                    //}
                     waitingfordata = false;
                 })
             }
@@ -28,12 +29,18 @@
         <div class="w-100 bg-slate-700 p-5 mb-5">
             <h1 class="text-2xl">Upload files</h1>
             <h2 class="mt-2">Upload a file to classify it on the RCST framework</h2>
-            {#if $waitingfordata}
-            <div class="bg-slate-500 p-3 mt-5">Uploading...</div>
+            {#if waitingfordata}
+            <div class="bg-slate-500 p-3 mt-5">Uploading... &nbsp;&nbsp;<svg class="inline-block" width=20px height=20px xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150"><path fill="none" stroke="#FFFFFF" stroke-width="15" stroke-linecap="round" stroke-dasharray="300 385" stroke-dashoffset="0" d="M275 75c0 31-27 50-50 50-58 0-92-100-150-100-28 0-50 22-50 50s23 50 50 50c58 0 92-100 150-100 24 0 50 19 50 50Z"><animate attributeName="stroke-dashoffset" calcMode="spline" dur="2" values="685;-685" keySplines="0 0 1 1" repeatCount="indefinite"></animate></path></svg></div>
             {:else if form?.success}
             <div class="bg-green-500 p-3 mt-5">Upload succeeded!</div>
             {:else if form?.error}
             <div class="error bg-red-500 p-3 mt-5">Upload failed with error: {form.error}</div>
+            {/if}
+            {#if form?.classification}
+            <div class="mt-5 p-5 bg-slate-700">
+                <h2 class="text-xl">Classification Result</h2>
+                <p class="mt-2"><strong>Classification:</strong> {form.classification}</p>
+            </div>
             {/if}
         </div>
         <div class="flex items-center justify-center w-full">
@@ -53,11 +60,4 @@
             <div class="grow"></div>
         </div>
     </form>
-
-    {#if $classification}
-    <div class="mt-5 p-5 bg-slate-700">
-        <h2 class="text-xl">Classification Result</h2>
-        <p class="mt-2"><strong>Classification:</strong> {$classification}</p>
-    </div>
-    {/if}
 </div>

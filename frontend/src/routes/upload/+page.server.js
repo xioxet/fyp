@@ -19,6 +19,7 @@ export const actions = {
                 error: result.message
             })
         } else {
+            console.log('returning...');
             return {
                 success: true,
                 message: "Upload succeeded!"

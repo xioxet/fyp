@@ -113,6 +113,7 @@ def get_pdf_text(pdf_docs):
     print("Get pdf text")
     extracted_text = ""
     for pdf in tqdm(pdf_docs):
+        print(f'Extracting {pdf}')
         try:
             extracted_text += get_one_pdf(pdf)
         except:
