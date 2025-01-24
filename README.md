@@ -20,5 +20,10 @@ wow!!!!!!!!!!!!
     docker-compose up -d
     ```
 
+### 3. Access the Application
+
 1. Open your web browser and navigate to the frontend URL.
-2. Go to `/chat` to access the chat functionality.
+2. Login with the default user credentials at the Login page:
+    - **Username**: `naoto`
+    - **Password**: `naoto`
+3. Go to `/chat` to access the chat functionality.

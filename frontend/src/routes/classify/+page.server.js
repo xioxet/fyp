@@ -1,5 +1,13 @@
 import { fail } from '@sveltejs/kit';
 import { BACKEND_URL } from "$env/static/private";
+import { redirect } from '@sveltejs/kit';
+
+export async function load({ fetch, params, cookies }) {
+	const accessToken = cookies.get('accessToken');
+	if (!accessToken) {
+        redirect(302, '/login')
+	}
+}
 
 export const actions = {
     default: async ({ fetch, params, request }) => {
@@ -22,7 +30,8 @@ export const actions = {
             console.log('returning...');
             return {
                 success: true,
-                classification: result.classification
+                classification: result.classification,
+                reasoning: result.reasoning
             };
         }
     }

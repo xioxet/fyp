@@ -37,7 +37,7 @@
             </label>
         </div> 
         <div class="flex items-center my-5">
-            <button class="hover:bg-orange-500 rounded-sm bg-slate-700 p-3 " href='/'>Submit</button>
+            <button class="hover:bg-green-400 rounded-sm bg-green-300 text-slate-800 p-3" href='/'>Submit</button>
             <div class="grow"></div>
         </div>
     </form>

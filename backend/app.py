@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse
+import json
 from pydantic import BaseModel
 from random import randint
 import asyncio
@@ -172,11 +173,20 @@ async def classify(file: UploadFile = File(...)):
         print("classifying text")
         message_response = await backendClassification.classify_text(file_text)
         print(f"{message_response['answer'] = }")
+        # Remove code block markers from the response string
+        json_str = message_response['answer'].strip('``[json').strip('](http://_vscodecontentref_/1)``').strip()
 
-        # Return the classification and summary in the response
+        answer_json = json.loads(json_str)
+        print("answer converted to json")
+        # Extract classification and reasoning from the response
+        classification = answer_json['classification']
+        reasoning = answer_json['reasoning']
+
+        # Return the classification and reasoning in the response
         return JSONResponse(content={
             "success": True,
-            "classification": message_response['answer'],
+            "classification": classification,
+            "reasoning": reasoning,
         })
     
     except Exception as e:

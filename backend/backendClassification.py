@@ -77,6 +77,7 @@ system_prompt = (
     "Classify the text into one of the following categories: Official(Open), Official(Closed), Restricted, Confidential, Secret or Top Secret."
     "Explain your reasoning as well based on the file contents."
     "Keep the classification concise."
+    "The output should be in a JSON format with \"classification\" and \"reasoning\"."
     "\n\n"
     "{context}"
 )
