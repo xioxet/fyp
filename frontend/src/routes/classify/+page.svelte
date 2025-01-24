@@ -11,7 +11,6 @@
 <div class="mx-auto p-5 w-3/5">
     <form method="post" enctype="multipart/form-data" use:enhance={({formData}) =>{
         waitingfordata = true;
-        // Not working. Backend logs show response fine. Frontend outputs error.
         return async ({ update }) => {
                 update().then(function() {
                     //console.log('response: ', response);
