@@ -1,10 +1,10 @@
 <script>
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
-    import { PUBLIC_BACKEND_URL } from "$env/static/public";
     import Body from "../components/Body.svelte";
     import Home from "../components/Home.svelte";
     import Naoto from "../components/Naoto.svelte";
+    import { PUBLIC_BACKEND_URL } from "$env/static/public";
     import PageLoading from "../components/PageLoading.svelte";
 
     let backendReady = writable(false);
