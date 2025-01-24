@@ -1,12 +1,24 @@
 # fyp
 wow!!!!!!!!!!!!
 
-instructions:
-make a copy of .env.example
-rename copy to .env
-fill in as required
+### 1. Setup Environment Variables
 
-docker-compose build
-docker-compose up -d
+1. Make a copy of `.env.example`.
+2. Rename the copy to `.env`.
+3. Fill in the required values in the `.env` file.
 
-then, open the website frontend pulls up and go to /chat
+### 2. Build and Run Docker Containers
+
+1. Download Docker Desktop
+
+2. Build the Docker containers:
+    ```sh
+    docker-compose build
+    ```
+3. Start the Docker containers:
+    ```sh
+    docker-compose up -d
+    ```
+
+1. Open your web browser and navigate to the frontend URL.
+2. Go to `/chat` to access the chat functionality.
