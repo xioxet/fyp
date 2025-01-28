@@ -1,5 +1,5 @@
 <div class=" z=10 text-center text-4xl center fixed w-1/6 pointer-events-none">
-    epic loading!!!
+    loading...
 </div>
 
 <style>

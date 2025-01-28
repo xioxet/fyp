@@ -93,16 +93,14 @@ def verify_login(username, password):
         SQL = "SELECT * FROM users WHERE username = %s"
         cursor.execute(SQL, (username,))
         user = cursor.fetchone()
-        print(user)
         if user:
             uuid4, username, hashed = user
             if login.verify_hash(hashed, password):
                 jwt = login.create_jwt(
                     {"uuid":uuid4, "username":username}, secret_key
                 )
-                return {"error":False, "message":jwt}
-        else:
-            return {"error":True, "message":"Invalid login credentials!"}
-            
+                return {"error":False, "message":jwt, "username":username}
+        return {"error":True, "message":"Invalid login credentials!"}
+    
     except Exception as e:
         return {"error":True, "message":str(e), "SQL":str(SQL)}, 

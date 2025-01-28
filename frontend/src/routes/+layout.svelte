@@ -1,8 +1,6 @@
 <script>
     import "../app.css";
     import Header from "../components/Header.svelte";
-    import Naoto from "../components/Naoto.svelte";
-    import Sidebar from "../components/Sidebar.svelte";
 
     let { children } = $props();
 </script>

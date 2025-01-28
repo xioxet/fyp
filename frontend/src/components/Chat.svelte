@@ -6,6 +6,7 @@
     import Loading from './Loading.svelte';
 
     let chat;
+    let messageinput;
     export let messages;
     export let waitingformessage = false;
     let initialmount = true;
@@ -26,6 +27,8 @@
             }
         }
     }
+
+    console.log(messageinput);
 
 </script>
 
@@ -52,6 +55,7 @@
         <form use:enhance={({formData}) => {
             waitingformessage = true;
             tempmessagetext = formData.get('message');
+            messageinput.value = "";
             return async ({ update }) => {
                 update().then(function() {
                     scrollToBottom();
@@ -59,7 +63,7 @@
                 })
             }
         }} action="" method="POST" class="relative mt-5">
-        <input autofocus name=message class="w-full h-10 rounded-lg bg-slate-100 text-slate-700 px-3" placeholder="Ask something here...">
+        <input bind:this={messageinput} autofocus name=message class="w-full h-10 rounded-lg bg-slate-100 text-slate-700 px-3" placeholder="Ask something here...">
         <button disabled={waitingformessage} type="submit" class="absolute end-2 text-xl text-slate-800 hover:text-orange-300">▶</button>
         </form>
     </div>

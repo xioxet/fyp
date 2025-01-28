@@ -32,6 +32,20 @@ export const actions = {
                     path: '/'
                 }
             )
+			cookies.set(
+				'loggedIn', true, {
+					secure: false,
+					path: '/',
+					httpOnly: false
+				}
+			)
+			cookies.set(
+				'username', result.username, {
+					secure: false,
+					path: '/',
+					httpOnly: false
+				}
+			)
             redirect(302, '/chat')
         }
 	}

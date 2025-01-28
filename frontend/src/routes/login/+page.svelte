@@ -8,7 +8,7 @@
         <LoginForm></LoginForm>
 
         {#if form?.error}
-        <div class="error bg-red-500 p-3">{form.error}</div>
+        <div class="error bg-red-500 p-3 mt-5">{form.error}</div>
         {/if}
 
     </div>

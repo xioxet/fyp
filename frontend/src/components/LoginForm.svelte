@@ -6,7 +6,7 @@
     <input type="password" name="password" class='px-2 text-black bg-gray-50 mt-1 h-8 w-full' id=password>
     <br><br>
     <div class="flex items-center">
-        <button class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 " href='/'>Login</button>
+        <button class="px-6 py-3 bg-slate-500 hover:bg-orange-600 text-lg font-semibold rounded-full shadow-md transform hover:scale-105 transition duration-300 ease-in-out" href='/'>Login</button>
         <div class="grow"></div>
     </div>
 </form>
