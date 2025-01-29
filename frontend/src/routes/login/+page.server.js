@@ -20,8 +20,9 @@ export const actions = {
 			})
 		})
 		const result = await response.json();
+		console.log(result.error, result.message);
         if (result.error) {
-			return fail(400, {
+			return fail(200, {
 				error: result.message
 			})
         } else {

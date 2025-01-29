@@ -21,11 +21,11 @@
         <div class="hidden lg:flex grow items-center justify-end">
             <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/'>home</a>
             <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/chat'>chat</a>
+            <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/upload'>upload</a>
+            <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/classify'>classify</a>
             {#if !loggedIn}
             <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/login'>login</a>
             {/if}
-            <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/upload'>upload</a>
-            <a class="hover:bg-orange-500 rounded-sm bg-slate-800 p-3 m-2" href='/classify'>classify</a>
         </div>
 
         <div class="lg:hidden flex items-center ml-auto">
