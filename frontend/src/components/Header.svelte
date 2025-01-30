@@ -21,14 +21,17 @@
 
 <div class="w-full sticky top-0 z-50 bg-slate-900 shadow-lg">
     <div class="w-90 px-10 py-2 flex items-center justify-between bg-slate-900">
-        <div class='flex items-center gap-5'>
-        <div class="rounded-sm bg-slate-700 p-3 m-2 font-bold text-lg text-white">
-            NYP CNC AI
+        <div class="flex items-center justify-between px-4 py-2">
+            <div class="rounded-sm bg-slate-700 p-3 font-bold text-lg sm:text-xl text-white">
+                NYP CNC AI
+            </div>
+            {#if loggedIn}
+            <div class="text-white rounded-sm p-3 text-sm sm:text-base">
+                {username ? `Welcome, ${username}!` : 'Welcome!'}
+            </div>
+            {/if}
         </div>
-        {#if loggedIn}
-        <div class="text-white rounded-sm p-3">{username ? `Welcome, ${username}!` : 'Welcome!'}</div>
-        {/if}
-        </div>
+        
 
         <!-- Desktop Menu -->
         <div class="hidden lg:flex items-center space-x-4">

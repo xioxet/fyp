@@ -6,13 +6,6 @@
     let waitingfordata = $state(false);
     let submitted_filename = $state(null);
 
-    // Optional: Capture the filename when uploaded
-    const handleFileChange = (event) => {
-        const fileInput = event.target;
-        if (fileInput && fileInput.files && fileInput.files[0]) {
-            submitted_filename.set(fileInput.files[0].name);
-        }
-    };
 </script>
 
 <div class="mx-auto p-4 md:p-5 w-full md:w-3/5">
@@ -59,7 +52,7 @@
                     <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                     <p class="text-xs text-gray-500 dark:text-gray-400">DOCX, PDF, PPTX or XLSX</p>
                 </div>
-                <input style="display:none" id="file" type="file" name="file" accept=".docx,.pdf,.pptx,.xlsx" on:change={handleFileChange}/>
+                <input style="display:none" id="file" type="file" name="file" accept=".docx,.pdf,.pptx,.xlsx" bind:value={submitted_filename}/>
                 <div class="mb-2 text-sm md:text-base text-gray-500 dark:text-gray-400">
                     {submitted_filename ? `File uploaded: ${submitted_filename.split(/(\\|\/)/g).pop()}` : `No file uploaded!`}
                 </div>
