@@ -26,7 +26,7 @@ export const actions = {
 				error: result.message
 			})
         } else {
-            const jwt = result.message;
+            const jwt =	result.message;
             cookies.set(
                 'accessToken', jwt, {
                     secure: false,

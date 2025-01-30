@@ -3,8 +3,8 @@
     let { data , form } = $props();
 </script>
 
-<div class="w-4/5 max-w-[500px] mx-auto p-5">
-    <div class="w-100 bg-slate-700 p-5 mb-5m">
+<div class="w-full md:w-4/5 max-w-[500px] mx-auto p-4 md:p-5">
+    <div class="w-100 bg-slate-700 p-4 md:p-5 mb-5m">
         <LoginForm></LoginForm>
 
         {#if form?.error}

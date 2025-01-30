@@ -1,5 +1,5 @@
 <div class="w-auto block">
-    <div class="message w-fit z-5 min-w-10 bg-orange-500 px-5 py-3 my-2 rounded"
+    <div class="message w-fit z-5 min-w-10 bg-orange-500 px-5 py-3 my-2 rounded text-sm md:text-lg"
     class:ml-auto={fromUser}
     class:bg-orange-700={fromUser}>
         <p>
