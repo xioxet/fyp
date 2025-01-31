@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.responses import JSONResponse
 import json
+import aiofiles
 from pydantic import BaseModel
 from random import randint
 import asyncio
@@ -145,7 +146,7 @@ async def upload(file: UploadFile = File(...)):
 async def classify(file: UploadFile = File(...)):
     try:
         print("reading file")
-        contents = file.file.read()
+        contents = await file.read()
         extension = file.filename.split(".")[1]
         if extension not in ['pdf', 'docx', 'pptx', 'xlsx']:
             raise Exception(detail="Filetype not allowed")
@@ -158,9 +159,9 @@ async def classify(file: UploadFile = File(...)):
         file_path = os.path.join(directory, file.filename)
         print(file_path)
 
-        with open(file_path, 'wb') as f:
-            f.write(contents)
-            f.close()
+        # Write file asynchronously
+        async with aiofiles.open(file_path, 'wb') as f:
+            await f.write(contents)
 
         # extract text
         file_text = get_file_text(extension, file_path)
@@ -192,7 +193,6 @@ async def classify(file: UploadFile = File(...)):
     
     except Exception as e:
         return {"success":False, "error":True, "message": f"File upload error: {str(e)}"}
-        raise HTTPException(status_code=500, error=True, detail=f'File upload error: {str(e)}')
     finally:
         file.file.close()
 

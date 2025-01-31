@@ -59,7 +59,6 @@ contextualize_q_system_prompt = (
 contextualize_q_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", "Reformulate standalone sections from the text content."),
-        MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ]
 )
@@ -86,7 +85,6 @@ system_prompt = (
 classification_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
-        MessagesPlaceholder("chat_history"),
         ("human", "{input}"),
     ]
 )
@@ -97,17 +95,12 @@ rag_chain = create_retrieval_chain(history_aware_retriever, classification_chain
 
 class State(TypedDict):
     input: str
-    chat_history: Annotated[Sequence[BaseMessage], add_messages]
     context: str
     answer: str
 
 def call_model(state: State):
     response = rag_chain.invoke(state)
     return {
-        "chat_history": [
-            HumanMessage(state["input"]),
-            AIMessage(response["answer"]),
-        ],
         "context": response["context"],
         "answer": response["answer"],
     }
