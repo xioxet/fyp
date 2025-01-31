@@ -134,7 +134,8 @@ async def upload(file: UploadFile = File(...)):
         # ???
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
+        return {"success":False, "error":True, "message": f"File upload error: {str(e)}"}
+        #raise HTTPException(status_code=500, error=True, detail=f'File upload error: {str(e)}')
     finally:
         file.file.close()
     
@@ -190,7 +191,8 @@ async def classify(file: UploadFile = File(...)):
         })
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f'File upload error: {str(e)}')
+        return {"success":False, "error":True, "message": f"File upload error: {str(e)}"}
+        raise HTTPException(status_code=500, error=True, detail=f'File upload error: {str(e)}')
     finally:
         file.file.close()
 

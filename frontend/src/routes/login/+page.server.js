@@ -20,18 +20,33 @@ export const actions = {
 			})
 		})
 		const result = await response.json();
+		console.log(result.error, result.message);
         if (result.error) {
-			return fail(400, {
+			return fail(200, {
 				error: result.message
 			})
         } else {
-            const jwt = result.message;
+            const jwt =	result.message;
             cookies.set(
                 'accessToken', jwt, {
                     secure: false,
                     path: '/'
                 }
             )
+			cookies.set(
+				'loggedIn', true, {
+					secure: false,
+					path: '/',
+					httpOnly: false
+				}
+			)
+			cookies.set(
+				'username', result.username, {
+					secure: false,
+					path: '/',
+					httpOnly: false
+				}
+			)
             redirect(302, '/chat')
         }
 	}

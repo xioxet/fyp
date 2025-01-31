@@ -1,6 +1,8 @@
 TODO:
-remove the bocchi the rock stuff (SAD)
+remove the bocchi the rock stuff (SAD) [DONE]
 format the classification message better
 figure out whats going on with the waf, or just remove it
-make sure it works out of the box
-
+make sure it works out of the box [erm...]
+fix the home page [done]
+make textbox empty [done]
+login breaks for some reason [done]
