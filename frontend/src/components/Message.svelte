@@ -1,6 +1,5 @@
 <script>
     let {messageText, fromUser, loading} = $props();
-    import { fade } from 'svelte/transition';
 </script>
 
 <div class="w-auto block">
@@ -15,10 +14,3 @@
         </p>
     </div>
 </div>
-
-<style>
-    .message {
-        position: relative;
-        z-index: 1;
-    }
-</style>

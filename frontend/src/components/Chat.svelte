@@ -40,7 +40,7 @@
     class="relative mx-auto p-5 flex flex-col max-h-[90vh] flex-1"
     class:opacity-0={initialmount}
 >
-    <div class="justify-end overflow-y-auto" bind:this={chat} in:fade={{ duration: 250 }}>
+    <div class="justify-end overflow-y-auto animate-fade-in" bind:this={chat} in:fade={{ duration: 500 }}>
         {#each messages as message}
             <Message
                 messageText={message.messagecontent} 
@@ -54,7 +54,7 @@
             <Message messageText={"Loading..."} fromUser={false} loading={true}></Message>
         {/if}
     </div>
-    <!-- User input -->
+
     <div class="h-[10h] mt-auto">
         <form
             use:enhance={({ formData }) => {
