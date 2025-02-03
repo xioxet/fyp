@@ -42,7 +42,6 @@
             {/if}
         </div>
 
-        <!-- File Upload Section -->
         <div class="flex items-center justify-center w-full">
             <label for="file" class="flex flex-col items-center justify-center w-full h-48 md:h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 opacity-0 animate-fade-in animation-delay-600">
                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -56,17 +55,16 @@
                 <div class="mb-2 text-sm md:text-base text-gray-500 dark:text-gray-400">
                     {submitted_filename ? `File uploaded: ${submitted_filename.split(/(\\|\/)/g).pop()}` : `No file uploaded!`}
                 </div>
-            </label>
-        </div>
+            </label>    
+    </div>
 
-        <!-- Submit Button -->
+  
         <div class="flex mt-5">
             <button type="submit" class="w-2/5 px-6 py-3 bg-slate-500 text-white text-lg font-semibold rounded-full shadow-md hover:bg-orange-600 transform hover:scale-105 transition duration-300 ease-in-out opacity-0 animate-fade-in animation-delay-800">Classify</button>
         </div>
     </form>
 </div>
 
-<!-- Scroll Animation Keyframes -->
 <style>
     @keyframes fade-in {
         0% {

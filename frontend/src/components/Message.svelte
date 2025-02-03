@@ -1,3 +1,8 @@
+<script>
+    let {messageText, fromUser, loading} = $props();
+    import { fade } from 'svelte/transition';
+</script>
+
 <div class="w-auto block">
     <div class="message w-fit z-5 min-w-10 bg-orange-500 px-5 py-3 my-2 rounded text-sm md:text-lg"
     class:ml-auto={fromUser}
@@ -10,10 +15,6 @@
         </p>
     </div>
 </div>
-
-<script>
-    let {messageText, fromUser, loading} = $props();
-</script>
 
 <style>
     .message {
