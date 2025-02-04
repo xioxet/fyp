@@ -16,9 +16,7 @@
     </div>
     
 
-    <!-- Features List Section -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        <!-- Feature 1 -->
         <div class="bg-slate-700 text-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out opacity-0 animate-fade-in">
             <h2 class="text-lg sm:text-xl font-semibold text-center mb-4">Data Governance Insights</h2>
             <p class="text-slate-300 text-base sm:text-lg">
@@ -26,7 +24,6 @@
             </p>
         </div>
 
-        <!-- Feature 2 -->
         <div class="bg-slate-700 text-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out opacity-0 animate-fade-in animation-delay-200">
             <h2 class="text-lg sm:text-xl font-semibold text-center mb-4">Classification Best Practices</h2>
             <p class="text-slate-300 text-base sm:text-lg">
@@ -34,25 +31,11 @@
             </p>
         </div>
 
-        <!-- Feature 3 -->
         <div class="bg-slate-700 text-white p-6 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out opacity-0 animate-fade-in animation-delay-400">
             <h2 class="text-lg sm:text-xl font-semibold text-center mb-4">Cybersecurity Awareness</h2>
             <p class="text-slate-300 text-base sm:text-lg">
                 Enhance your organization's cybersecurity practices and stay updated with the latest trends.
             </p>
-        </div>
-    </div>
-
-    <!-- Scroll Animation Section -->
-    <div class="text-center mb-12 opacity-0 animate-fade-in animation-delay-600">
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-700 mb-6">Why Choose Our Chatbot?</h2>
-        <p class="text-base sm:text-lg text-slate-500">
-            Our chatbot is designed to assist you 24/7 with relevant and accurate information, powered by cutting-edge AI.
-        </p>
-        <div class="mt-8">
-            <a href="/features" class="px-6 py-3 bg-slate-500 hover:bg-orange-600 text-lg font-semibold rounded-full shadow-lg transform hover:scale-110 transition duration-300 ease-in-out">
-                Explore Features
-            </a>
         </div>
     </div>
 </div>
