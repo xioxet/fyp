@@ -165,4 +165,5 @@ postgres/
 backend/chroma_db
 backend/chroma_db/chroma.sqlite3
 backend/modelling/extracted_text.txt
-backend/uploads
+backend/uploads/classify
+backend/uploads/data
