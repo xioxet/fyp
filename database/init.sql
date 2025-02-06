@@ -22,8 +22,8 @@ CREATE TABLE users (
 	);
 
 INSERT INTO users (uuid, username, password) VALUES
-    ('faa204f4-3dbb-4b2c-944e-e15884cf0f28', 
-     'naoto', 
+    ('faa204f3-3dbb-4b2c-944e-e15884cf0f28', 
+     'user', 
      '$pbkdf2-sha256$29000$mdNai5HSujeGkBIiJKTUGg$CpEbjtymlGIAvPS1ChIoQ2AMLs8JE6ZqlwGz003dSrM');
 
 
