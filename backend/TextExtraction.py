@@ -139,7 +139,7 @@ def get_one_pptx(pptx):
     
     for slide_index, slide in enumerate(prs.slides):
         print(f"Processing slide {slide_index + 1}/{len(prs.slides)}")
-        for shape in enumerate(slide.shapes):
+        for shape in slide.shapes:
             if shape.shape_type == 13:  # This is the image shape type
                 try:
                     print("Found image shape")

@@ -71,7 +71,6 @@ history_aware_retriever = create_history_aware_retriever(
     llm, multiquery_retriever, contextualize_q_prompt
 )
 
-# Adjusted system prompt to include the context variable
 system_prompt = (
     "You are an assistant for question-answering tasks. "
     "Use ONLY the following pieces of retrieved context to answer the questions. "
